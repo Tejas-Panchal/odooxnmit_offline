@@ -1,6 +1,43 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { Register } from "../features/Auth";
 
 export default function RegisterPage() {
+    const [name, setName] = React.useState("")
+    const [email, setEmail] = React.useState("")
+    const [password, setPassword] = React.useState("")
+    const [loginId, setLoginId] = React.useState("")
+    const [confirmPassword, setConfirmPassword] = React.useState("")
+    const [errors, setErrors] = React.useState({})
+    const [isLoading, setIsLoading] = React.useState(false)
+    const navigate = useNavigate()
+
+
+    const handleRegister = (event) => {
+      event.preventDefault()
+      setErrors({})
+      setIsLoading(true)
+      if (password !== confirmPassword) {
+        setErrors({ password: "Passwords do not match" })
+        setIsLoading(false)
+        return
+      }
+      Register( name, email, password, loginId )
+      .then((data) => {
+        console.log(data)
+        setIsLoading(false)
+        navigate("/login")
+      })
+      .catch((error) => {
+        console.log(error)
+        setErrors(error.response)
+        setIsLoading(false)
+      })
+    }
+
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
       {/* Navbar */}
@@ -27,26 +64,41 @@ export default function RegisterPage() {
           <form className="space-y-4">
             <input
               type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
               placeholder="Name"
               className="w-full border rounded-md px-3 py-2 outline-none focus:border-[#714B67] focus:bg-[#BFA9C3]"
             />
             <input
               type="text"
-              placeholder="Login ID"
+              value={loginId}
+              onChange={(e) => setLoginId(e.target.value)}
+              required
+              placeholder="Create Login ID"
               className="w-full border rounded-md px-3 py-2 outline-none focus:border-[#714B67] focus:bg-[#BFA9C3]"
             />
             <input
               type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
               placeholder="Email"
               className="w-full border rounded-md px-3 py-2 outline-none focus:border-[#714B67] focus:bg-[#BFA9C3]"
             />
             <input
               type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
               placeholder="Password"
               className="w-full border rounded-md px-3 py-2 outline-none focus:border-[#714B67] focus:bg-[#BFA9C3]"
             />
             <input
               type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
               placeholder="confirm Password"
               className="w-full border rounded-md px-3 py-2 outline-none focus:border-[#714B67] focus:bg-[#BFA9C3]"
             />
@@ -58,16 +110,18 @@ export default function RegisterPage() {
             </div>
             <button
               type="submit"
+              onClick={handleRegister}
+              disabled={isLoading}
               className="w-full bg-[#017384] text-white py-2 rounded-full font-medium hover:bg-teal-700"
             >
-              Create my account
+              {isLoading ? "Registering..." : "Sign Up"}
             </button>
           </form>
           <p className="text-xs text-center mt-4">
             Already have an account?{" "}
-            <a href="#" className="text-[#714B67] hover:underline">
-              Login instead
-            </a>
+            <Link to="/login" className="text-[#017384] hover:underline">
+              Log In
+            </Link>
           </p>
         </div>
       </main>
