@@ -15,7 +15,7 @@ const DashboardNav = ({ isOpen, onClose }) => {
 
     const menuItems = {
         Purchase: ['Purchase_Order', 'Purchase_Bill', 'Payment'],
-        Sale: ['Sale_Order', 'Sale_Invoice', 'Receipt'],
+        Sale: ['Sales_Order', 'Sale_Invoice', 'Receipt'],
         Report: ['Profit_&_Loss', 'Balance_Sheet', 'Stock_Statement'],
     };
 

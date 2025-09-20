@@ -100,7 +100,9 @@ const VendorBillPage = () => {
                         {['Print', 'Send', 'Cancel'].map(action => (
                             <button key={action} className="px-5 py-2 rounded-md font-semibold bg-gray-200 text-gray-800 hover:bg-gray-300">{action}</button>
                         ))}
-                         <button className="px-5 py-2 rounded-md font-semibold bg-[#714B67] text-white hover:bg-purple-800">Pay</button>
+                         <button
+                         onClick={() => window.location.href = '/Invoice_Payment'}
+                         className="px-5 py-2 rounded-md font-semibold bg-[#714B67] text-white hover:bg-purple-800">Pay</button>
                     </div>
 
                     {/* Items Table */}

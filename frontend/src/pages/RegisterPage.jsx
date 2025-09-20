@@ -17,7 +17,34 @@ export default function RegisterPage() {
     const [currentStep, setCurrentStep] = React.useState("register") // "register" or "verify"
     const [otp, setOtp] = React.useState("")
     const [otpError, setOtpError] = React.useState("")
+    const [passwordValidation, setPasswordValidation] = React.useState({
+        hasMinLength: false,
+        hasUppercase: false,
+        hasLowercase: false,
+        hasNumber: false,
+        hasSpecialChar: false
+    })
     const navigate = useNavigate()
+
+    const validatePassword = (password) => {
+        setPasswordValidation({
+            hasMinLength: password.length >= 8,
+            hasUppercase: /[A-Z]/.test(password),
+            hasLowercase: /[a-z]/.test(password),
+            hasNumber: /\d/.test(password),
+            hasSpecialChar: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)
+        })
+    }
+
+    const handlePasswordChange = (e) => {
+        const newPassword = e.target.value
+        setPassword(newPassword)
+        validatePassword(newPassword)
+    }
+
+    const isPasswordValid = () => {
+        return Object.values(passwordValidation).every(Boolean)
+    }
 
 
     const handleRegister = (event) => {
@@ -26,6 +53,11 @@ export default function RegisterPage() {
       setIsLoading(true)
       if (password !== confirmPassword) {
         setErrors({ password: "Passwords do not match" })
+        setIsLoading(false)
+        return
+      }
+      if (!isPasswordValid()) {
+        setErrors({ password: "Password does not meet all requirements" })
         setIsLoading(false)
         return
       }
@@ -110,11 +142,37 @@ export default function RegisterPage() {
                 <input
                   type="password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={handlePasswordChange}
                   required
                   placeholder="Password"
                   className="w-full border rounded-md px-3 py-2 outline-none focus:border-[#714B67] focus:bg-[#BFA9C3]"
                 />
+                
+                {/* Password Validation Indicators */}
+                {password && (
+                  <div className="text-xs space-y-1 mt-2">
+                    <div className={`flex items-center ${passwordValidation.hasMinLength ? 'text-green-600' : 'text-red-500'}`}>
+                      <span className="mr-2">{passwordValidation.hasMinLength ? '✓' : '✗'}</span>
+                      At least 8 characters
+                    </div>
+                    <div className={`flex items-center ${passwordValidation.hasUppercase ? 'text-green-600' : 'text-red-500'}`}>
+                      <span className="mr-2">{passwordValidation.hasUppercase ? '✓' : '✗'}</span>
+                      One uppercase letter
+                    </div>
+                    <div className={`flex items-center ${passwordValidation.hasLowercase ? 'text-green-600' : 'text-red-500'}`}>
+                      <span className="mr-2">{passwordValidation.hasLowercase ? '✓' : '✗'}</span>
+                      One lowercase letter
+                    </div>
+                    <div className={`flex items-center ${passwordValidation.hasNumber ? 'text-green-600' : 'text-red-500'}`}>
+                      <span className="mr-2">{passwordValidation.hasNumber ? '✓' : '✗'}</span>
+                      One number
+                    </div>
+                    <div className={`flex items-center ${passwordValidation.hasSpecialChar ? 'text-green-600' : 'text-red-500'}`}>
+                      <span className="mr-2">{passwordValidation.hasSpecialChar ? '✓' : '✗'}</span>
+                      One special character
+                    </div>
+                  </div>
+                )}
                 <input
                   type="password"
                   value={confirmPassword}
@@ -134,8 +192,8 @@ export default function RegisterPage() {
                 </div>
                 <button
                   type="submit"
-                  disabled={isLoading}
-                  className="w-full bg-[#017384] text-white py-2 rounded-full font-medium hover:bg-teal-700 disabled:opacity-50"
+                  disabled={isLoading || !isPasswordValid()}
+                  className="w-full bg-[#017384] text-white py-2 rounded-full font-medium hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isLoading ? "Registering..." : "Sign Up"}
                 </button>
