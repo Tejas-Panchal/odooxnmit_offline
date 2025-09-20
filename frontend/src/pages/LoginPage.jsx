@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { Login } from '../features/Auth';
+import Header from '../components/Header';
 
 const LoginPage = () => {
     const [loginId, setLoginId] = useState('');
@@ -32,23 +33,7 @@ const LoginPage = () => {
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
       {/* Navbar - Kept the same for consistency */}
-      <header className="bg-[#714B67] text-white">
-        <div className="container mx-auto flex justify-between items-center px-6 py-4">
-          <div className="text-xl font-bold cursor-pointer">
-            {/* Logo */}
-          </div>
-          <nav className="flex space-x-8">
-            <a href="#" className="hover:text-gray-300">Home</a>
-            <a href="#" className="hover:text-gray-300">About</a>
-            <a href="#" className="hover:text-gray-300">Services</a>
-            <Link to="/"> {/* Link to Sign Up page */}
-              <button className="bg-white text-[#714B67] px-4 py-1 rounded-full font-medium">
-                Sign Up
-              </button>
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <Header />
 
       {/* Main Content */}
       <main className="flex-grow flex items-center justify-center py-10">
@@ -81,7 +66,7 @@ const LoginPage = () => {
           </form>
           <p className="text-xs text-center mt-4">
             Don't have an account?{" "}
-            <Link to="/" className="text-[#017384] hover:underline">
+            <Link to="/register" className="text-[#017384] hover:underline">
               Sign Up
             </Link>
           </p>
@@ -94,7 +79,7 @@ const LoginPage = () => {
           <div>
             <h4 className="font-semibold mb-2">Quick links</h4>
             <ul>
-              {Array(5)
+              {Array(2)
                 .fill("link 1")
                 .map((link, idx) => (
                   <li key={idx} className="hover:underline cursor-pointer">{link}</li>
@@ -104,7 +89,7 @@ const LoginPage = () => {
           <div>
             <h4 className="font-semibold mb-2">FAQs</h4>
             <ul>
-              {Array(5)
+              {Array(2)
                 .fill("link 1")
                 .map((link, idx) => (
                   <li key={idx} className="hover:underline cursor-pointer">{link}</li>
@@ -114,7 +99,7 @@ const LoginPage = () => {
           <div>
             <h4 className="font-semibold mb-2">About</h4>
             <ul>
-              {Array(5)
+              {Array(2)
                 .fill("link 1")
                 .map((link, idx) => (
                   <li key={idx} className="hover:underline cursor-pointer">{link}</li>
@@ -124,7 +109,7 @@ const LoginPage = () => {
           <div>
             <h4 className="font-semibold mb-2">Features</h4>
             <ul>
-              {Array(5)
+              {Array(2)
                 .fill("link 1")
                 .map((link, idx) => (
                   <li key={idx} className="hover:underline cursor-pointer">{link}</li>
@@ -134,7 +119,7 @@ const LoginPage = () => {
           <div>
             <h4 className="font-semibold mb-2">Social Media</h4>
             <ul>
-              {Array(5)
+              {Array(2)
                 .fill("link 1")
                 .map((link, idx) => (
                   <li key={idx} className="hover:underline cursor-pointer">{link}</li>

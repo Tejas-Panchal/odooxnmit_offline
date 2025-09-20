@@ -18,3 +18,12 @@ export const Login = async (email, password) => {
         throw error;
     }
 };
+
+export const VerifyOtp = async (email, otp) => {
+    try {
+        const response = await axios.post("http://127.0.0.1:5000/auth/verify-otp", { email, otp });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
