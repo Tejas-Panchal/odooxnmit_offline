@@ -52,35 +52,22 @@ def create_po():
 # --- Sales Order APIs ---
 @transactions_bp.route("/sales-orders", methods=["POST"])
 @jwt_required()
-def create_so():
+def create_sales_order():
     data = request.get_json()
     created_by = get_jwt_identity()
 
-    # <-- FIX: Use the correct `SalesOrder` model, not `SalesOrderItem`.
-    new_so = SalesOrder( 
-        customer_id=data.get('customer_id'),
-        so_date=data.get('so_date'),
-        total_amount=data.get('total_amount'),
-        status='pending',
-        created_by=created_by # <-- FIX: Use the created_by variable.
+    # 1. Create the Sales Order record
+    new_so = SalesOrder(
+        customer_id=data['customer_id'],
+        # Corrected line: use 'order_date' instead of 'so_date'
+        order_date=data['order_date'], 
+        status='Draft',
+        created_by=created_by
     )
     db.session.add(new_so)
-    db.session.flush() # <-- Flush to get the new_so.so_id.
-
-    so_items = []
-    for item_data in data.get('items', []):
-        so_item = SalesOrderItem(
-            so_id=new_so.so_id, # <-- Use the ID from the flushed object.
-            product_id=item_data.get('product_id'),
-            quantity=item_data.get('quantity'),
-            unit_price=item_data.get('unit_price')
-        )
-        so_items.append(so_item)
-
-    db.session.add_all(so_items)
-    
-    # <-- FIX: Commit only ONCE.
     db.session.commit()
+
+    # ... rest of the code remains the same
     
     return jsonify({"msg": "SO created", "id": new_so.so_id}), 201
 

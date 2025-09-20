@@ -50,3 +50,11 @@ def create_contact():
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
+    
+@contact_bp.route("/contacts", methods=["GET"])
+@jwt_required()
+def get_contacts():
+    current_user_id = get_jwt_identity()
+    contacts = Contact.query.filter_by(created_by=current_user_id).all()
+    result = [{"id": c.contact_id, "name": c.name, "type": c.type} for c in contacts]
+    return jsonify(result), 200
