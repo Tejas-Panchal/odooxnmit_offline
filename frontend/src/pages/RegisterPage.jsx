@@ -24,6 +24,18 @@ export default function RegisterPage() {
         hasNumber: false,
         hasSpecialChar: false
     })
+    const [emailValidation, setEmailValidation] = React.useState({
+        isValid: false,
+        message: ""
+    })
+    const [passwordMatch, setPasswordMatch] = React.useState({
+        isValid: false,
+        message: ""
+    })
+    const [loginIdValidation, setLoginIdValidation] = React.useState({
+        isValid: false,
+        message: ""
+    })
     const navigate = useNavigate()
 
     const validatePassword = (password) => {
@@ -36,14 +48,273 @@ export default function RegisterPage() {
         })
     }
 
+    const validateLoginId = (loginId) => {
+        // Check if loginId contains only letters (alphabetic characters)
+        const onlyLettersRegex = /^[a-zA-Z]+$/
+        
+        if (loginId.length === 0) {
+            setLoginIdValidation({
+                isValid: false,
+                message: ""
+            })
+            return
+        }
+        
+        if (loginId.length < 3) {
+            setLoginIdValidation({
+                isValid: false,
+                message: "Login ID must be at least 3 characters long"
+            })
+            return
+        }
+        
+        if (loginId.length > 20) {
+            setLoginIdValidation({
+                isValid: false,
+                message: "Login ID cannot exceed 20 characters"
+            })
+            return
+        }
+        
+        if (!onlyLettersRegex.test(loginId)) {
+            setLoginIdValidation({
+                isValid: false,
+                message: "Login ID can only contain letters (a-z, A-Z)"
+            })
+            return
+        }
+        
+        // All validations passed
+        setLoginIdValidation({
+            isValid: true,
+            message: "Valid login ID"
+        })
+    }
+
+    const validateEmail = (email) => {
+        // More comprehensive email validation
+        const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
+        
+        // Check basic format
+        if (!emailRegex.test(email)) {
+            setEmailValidation({
+                isValid: false,
+                message: "Please enter a valid email address"
+            })
+            return
+        }
+        
+        // Additional validations
+        if (email.length > 254) {
+            setEmailValidation({
+                isValid: false,
+                message: "Email address is too long"
+            })
+            return
+        }
+        
+        if (email.startsWith('.') || email.endsWith('.')) {
+            setEmailValidation({
+                isValid: false,
+                message: "Email cannot start or end with a dot"
+            })
+            return
+        }
+        
+        if (email.includes('..')) {
+            setEmailValidation({
+                isValid: false,
+                message: "Email cannot contain consecutive dots"
+            })
+            return
+        }
+        
+        const [localPart, domain] = email.split('@')
+        
+        // Validate local part (before @)
+        if (localPart.length > 64 ) {
+            setEmailValidation({
+                isValid: false,
+                message: "Email username part is too long"
+            })
+            return
+        }
+        
+        // Local part cannot be empty
+        if (localPart.length === 0) {
+            setEmailValidation({
+                isValid: false,
+                message: "Email username part cannot be empty"
+            })
+            return
+        }
+        
+        // Local part cannot start or end with a dot
+        if (localPart.startsWith('.') || localPart.endsWith('.')) {
+            setEmailValidation({
+                isValid: false,
+                message: "Email username cannot start or end with a dot"
+            })
+            return
+        }
+        
+    
+        
+
+        for(let char of localPart) {
+            // Check for invalid characters
+            if (/[!#$%&'*+/=?^_`{|}~-]/.test(char)) {
+                setEmailValidation({
+                    isValid: false,
+                    message: "Email username contains invalid characters"
+                })
+                return
+            }
+        }
+        
+        // Local part cannot start or end with special characters (except allowed ones)
+        const firstChar = localPart[0]
+        const lastChar = localPart[localPart.length - 1]
+        const specialChars = /[!#$%&'*+/=?^_`{|}~-]/
+        
+        if (specialChars.test(firstChar) || specialChars.test(lastChar)) {
+            setEmailValidation({
+                isValid: false,
+                message: "Email username cannot start or end with special characters"
+            })
+            return
+        }
+        
+        // Check for invalid characters in local part
+        const invalidChars = /[()<>[\]:;@\\,"]/
+        if (invalidChars.test(localPart)) {
+            setEmailValidation({
+                isValid: false,
+                message: "Email username contains invalid characters"
+            })
+            return
+        }
+        
+        
+        // Validate domain part (after @)
+        if (domain.length > 253) {
+            setEmailValidation({
+                isValid: false,
+                message: "Email domain is too long"
+            })
+            return
+        }
+        
+        // Check for valid domain format
+        const domainParts = domain.split('.')
+        if (domainParts.length < 2) {
+            setEmailValidation({
+                isValid: false,
+                message: "Email must have a valid domain"
+            })
+            return
+        }
+        
+        // Check if domain has valid TLD
+        const tld = domainParts[domainParts.length - 1]
+        if (tld.length < 2 || !/^[a-zA-Z]+$/.test(tld)) {
+            setEmailValidation({
+                isValid: false,
+                message: "Email must have a valid domain extension"
+            })
+            return
+        }
+        
+        // All validations passed
+        setEmailValidation({
+            isValid: true,
+            message: "Valid email format"
+        })
+    }
+
     const handlePasswordChange = (e) => {
         const newPassword = e.target.value
         setPassword(newPassword)
         validatePassword(newPassword)
+        
+        // Re-validate confirm password if it exists
+        if (confirmPassword.length > 0) {
+            if (newPassword === confirmPassword) {
+                setPasswordMatch({
+                    isValid: true,
+                    message: "Passwords match"
+                })
+            } else {
+                setPasswordMatch({
+                    isValid: false,
+                    message: "Passwords do not match"
+                })
+            }
+        }
+    }
+
+    const handleEmailChange = (e) => {
+        const newEmail = e.target.value
+        setEmail(newEmail)
+        if (newEmail.length > 0) {
+            validateEmail(newEmail)
+        } else {
+            setEmailValidation({ isValid: false, message: "" })
+        }
+    }
+
+    const handleLoginIdChange = (e) => {
+        const newLoginId = e.target.value
+        setLoginId(newLoginId)
+        if (newLoginId.length > 0) {
+            validateLoginId(newLoginId)
+        } else {
+            setLoginIdValidation({ isValid: false, message: "" })
+        }
+    }
+
+    const handleConfirmPasswordChange = (e) => {
+        const newConfirmPassword = e.target.value
+        setConfirmPassword(newConfirmPassword)
+        
+        if (newConfirmPassword.length > 0) {
+            if (password === newConfirmPassword) {
+                setPasswordMatch({
+                    isValid: true,
+                    message: "Passwords match"
+                })
+            } else {
+                setPasswordMatch({
+                    isValid: false,
+                    message: "Passwords do not match"
+                })
+            }
+        } else {
+            setPasswordMatch({ isValid: false, message: "" })
+        }
     }
 
     const isPasswordValid = () => {
         return Object.values(passwordValidation).every(Boolean)
+    }
+
+    const isEmailValid = () => {
+        return emailValidation.isValid
+    }
+
+    const isLoginIdValid = () => {
+        return loginIdValidation.isValid
+    }
+
+    const isFormValid = () => {
+        return isPasswordValid() && 
+               isEmailValid() && 
+               isLoginIdValid() &&
+               name.trim() && 
+               loginId.trim() && 
+               passwordMatch.isValid &&
+               password.length > 0 &&
+               confirmPassword.length > 0
     }
 
 
@@ -58,6 +329,16 @@ export default function RegisterPage() {
       }
       if (!isPasswordValid()) {
         setErrors({ password: "Password does not meet all requirements" })
+        setIsLoading(false)
+        return
+      }
+      if (!isEmailValid()) {
+        setErrors({ email: "Please enter a valid email address" })
+        setIsLoading(false)
+        return
+      }
+      if (!isLoginIdValid()) {
+        setErrors({ loginId: "Please enter a valid login ID" })
         setIsLoading(false)
         return
       }
@@ -126,19 +407,35 @@ export default function RegisterPage() {
                 <input
                   type="text"
                   value={loginId}
-                  onChange={(e) => setLoginId(e.target.value)}
+                  onChange={handleLoginIdChange}
                   required
                   placeholder="Create Login ID"
                   className="w-full border rounded-md px-3 py-2 outline-none focus:border-[#714B67] focus:bg-[#BFA9C3]"
                 />
+                
+                {/* Login ID Validation Indicator */}
+                {loginId && loginIdValidation.message && (
+                  <div className={`text-xs mt-1 flex items-center ${loginIdValidation.isValid ? 'text-green-600' : 'text-red-500'}`}>
+                    <span className="mr-2">{loginIdValidation.isValid ? '✓' : '✗'}</span>
+                    {loginIdValidation.message}
+                  </div>
+                )}
                 <input
                   type="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={handleEmailChange}
                   required
                   placeholder="Email"
                   className="w-full border rounded-md px-3 py-2 outline-none focus:border-[#714B67] focus:bg-[#BFA9C3]"
                 />
+                
+                {/* Email Validation Indicator */}
+                {email && emailValidation.message && (
+                  <div className={`text-xs mt-1 flex items-center ${emailValidation.isValid ? 'text-green-600' : 'text-red-500'}`}>
+                    <span className="mr-2">{emailValidation.isValid ? '✓' : '✗'}</span>
+                    {emailValidation.message}
+                  </div>
+                )}
                 <input
                   type="password"
                   value={password}
@@ -176,13 +473,27 @@ export default function RegisterPage() {
                 <input
                   type="password"
                   value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  onChange={handleConfirmPasswordChange}
                   required
                   placeholder="confirm Password"
                   className="w-full border rounded-md px-3 py-2 outline-none focus:border-[#714B67] focus:bg-[#BFA9C3]"
                 />
+                
+                {/* Password Match Validation Indicator */}
+                {confirmPassword && passwordMatch.message && (
+                  <div className={`text-xs mt-1 flex items-center ${passwordMatch.isValid ? 'text-green-600' : 'text-red-500'}`}>
+                    <span className="mr-2">{passwordMatch.isValid ? '✓' : '✗'}</span>
+                    {passwordMatch.message}
+                  </div>
+                )}
                 {errors.password && (
                   <p className="text-red-500 text-sm">{errors.password}</p>
+                )}
+                {errors.email && (
+                  <p className="text-red-500 text-sm">{errors.email}</p>
+                )}
+                {errors.loginId && (
+                  <p className="text-red-500 text-sm">{errors.loginId}</p>
                 )}
                 <div className="flex items-center text-xs">
                   <input type="checkbox" className="mr-2" required />
@@ -192,7 +503,7 @@ export default function RegisterPage() {
                 </div>
                 <button
                   type="submit"
-                  disabled={isLoading || !isPasswordValid()}
+                  disabled={isLoading || !isFormValid()}
                   className="w-full bg-[#017384] text-white py-2 rounded-full font-medium hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isLoading ? "Registering..." : "Sign Up"}

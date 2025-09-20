@@ -27,7 +27,7 @@ const DashboardNav = ({ isOpen, onClose }) => {
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
-            <div className="bg-[#2a2a2a] text-white border-2 border-gray-600 rounded-2xl shadow-xl w-full max-w-3xl font-['cursive'] relative">
+            <div className="bg-[#2a2a2a] text-white border-2 border-gray-600 rounded-2xl shadow-xl w-1/2 max-w-3xl font-['cursive'] relative">
                 <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors" aria-label="Close menu">
                     <CloseIcon />
                 </button>

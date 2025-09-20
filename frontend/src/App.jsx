@@ -10,6 +10,9 @@ import InvoicePymentPage from './pages/InvoicePymentPage'
 import SalesOrderPage from './pages/SalesOrderPage'
 import CustomerInvoicePage from './pages/CustomerInvoicePage'
 import ProfitAndLossPage from './pages/ProfitAndLossPage'
+import CreateProductPage from './pages/CreateProductPage'
+import ContactsMasterPage from './pages/ContactsMasterPage'
+import CreateContactPage from './pages/CreateContactPage'
 
 const App = () => {
   return (
@@ -26,6 +29,9 @@ const App = () => {
           <Route path="/Sales_Order" element={<SalesOrderPage />} />
           <Route path="/Customer_Invoice" element={<CustomerInvoicePage />} />
           <Route path="/Profit_&_Loss" element={<ProfitAndLossPage />} />
+          <Route path="/Create_Product" element={<CreateProductPage />} />
+          <Route path="/Contacts_Master" element={<ContactsMasterPage />} />
+          <Route path="/Create_Contact" element={<CreateContactPage />} />
         </Routes>
       </Router>
     </div>

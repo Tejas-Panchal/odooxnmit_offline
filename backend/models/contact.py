@@ -16,4 +16,4 @@ class Contact(db.Model):
     profile_image = db.Column(db.String(255), nullable=True)
 
     # Corrected line
-    created_by = db.Column(db.Integer, db.ForeignKey("users.user_id", ondelete="SET NULL"))
+    created_by = db.Column(db.String(20), db.ForeignKey("users.user_id", ondelete="SET NULL"))

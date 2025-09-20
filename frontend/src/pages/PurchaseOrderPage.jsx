@@ -14,7 +14,9 @@ const PageHeader = () => (
                 <h1 className="text-xl font-semibold">Shiv Accounts Cloud</h1>
             </div>
             <nav className="flex items-center space-x-4">
-                <button className="bg-green-400 text-green-900 px-5 py-1.5 rounded-md font-bold hover:bg-green-300 transition-colors">
+                <button 
+                onClick={() => window.location.href = '/Create_Product'}
+                className="bg-green-400 text-green-900 px-5 py-1.5 rounded-md font-bold hover:bg-green-300 transition-colors">
                     New
                 </button>
                 <button 

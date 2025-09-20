@@ -21,7 +21,11 @@ const LoginPage = () => {
             console.log(data);
             localStorage.setItem('token', data.access_token);
             setIsLoading(false);
+            if (data.role === 'Admin') {
+                navigate("/Contacts_Master");
+            } else if (data.role === 'Accountant') {
             navigate("/dashboard");
+            }else if(data.role === 'Contact'){}
         })
         .catch((error) => {
             console.log(error);
@@ -68,7 +72,10 @@ const LoginPage = () => {
             Don't have an account?{" "}
             <Link to="/register" className="text-[#017384] hover:underline">
               Sign Up
-            </Link>
+            </Link><br/>
+            <span className="text-red-500 m-10 text-sm text-center mt-4">{errors && (
+              typeof errors === "string" ? errors : errors.detail
+            )}</span>
           </p>
         </div>
       </main>

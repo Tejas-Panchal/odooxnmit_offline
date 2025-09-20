@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import Logo from "../assests/logo_1.png";
 
 export const Header = () => {
   const navigate = useNavigate();
@@ -24,7 +25,11 @@ export const Header = () => {
         <header className="bg-[#714B67] text-white">
         <div className="container mx-auto flex justify-between items-center px-6 py-4">
           <div className="text-xl font-bold cursor-pointer" onClick={() => handleNavigation('/')}>
-            {/* Logo */}
+            <img 
+              src={Logo} 
+              alt="Shiv Accounts Cloud Logo" 
+              style={{height: "32px", width: "32px", objectFit: "contain"}} 
+            />
             Shiv Accounts Cloud
           </div>
           <nav className="flex space-x-8">
