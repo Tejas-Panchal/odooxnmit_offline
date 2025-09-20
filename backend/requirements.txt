@@ -7,3 +7,4 @@ psycopg2-binary
 pymysql
 Werkzeug
 flask_mail
+requests

@@ -8,4 +8,7 @@ class User(db.Model):
     email = db.Column(db.String(100), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
     role = db.Column(db.Enum("Admin", "Accountant", "Contact", name="user_role"), nullable=False)
+    otp = db.Column(db.String(6), nullable=True)
+    otp_expires = db.Column(db.DateTime, nullable=True)
+    is_verified = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, server_default=db.func.now())

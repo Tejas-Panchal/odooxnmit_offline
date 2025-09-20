@@ -1,6 +1,18 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from models import db, Contact, Product, Tax, ChartOfAccounts
+from models.contact import Contact
+from models.product import Product
+from models.tax import Tax
+from models.chart_of_account import ChartOfAccount
+from extensions import db
+from models.purchase_order import PurchaseOrder
+from models.sales_order import SalesOrder
+from models.vendor_bill import VendorBill
+from models.customer_invoice import CustomerInvoice
+from models.payment import Payment
+from models.purchase_order_item import PurchaseOrderItem
+from models.sales_order_item import SalesOrderItem
+from models.stock_leadger import StockLedger
 
 master_bp = Blueprint('master', __name__)
 

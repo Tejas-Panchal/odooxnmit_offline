@@ -3,7 +3,7 @@ from extensions import db
 class Contact(db.Model):
     __tablename__ = "contacts"
 
-    contact_id = db.Column(db.Integer, primary_key=True)
+    contact_id = db.Column(db.String, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     type = db.Column(db.Enum("Customer", "Vendor", "Both", name="contact_type"), nullable=False)
     email = db.Column(db.String(100))

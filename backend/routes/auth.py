@@ -35,7 +35,7 @@ def register():
     password_hash=hashed,
     role=role,
     otp=otp_code,
-    otp_expires_at=expires,
+    otp_expires=expires,
     )
 
     db.session.add(user)
@@ -113,7 +113,7 @@ def verify_otp():
 
     # set null OTP
     user.otp = None
-    user.otp_expires_at = None
+    user.otp_expires = None
     user.is_verified = True
     db.session.add(user)
     db.session.commit()

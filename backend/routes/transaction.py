@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from models import db, PurchaseOrder, SalesOrder, VendorBill, CustomerInvoice, Payment, PurchaseOrderItems, SalesOrderItems, StockLedger
-
+from models.purchase_order_item import PurchaseOrder,SalesOrder, VendorBill, CustomerInvoice, Payment, PurchaseOrderItems, SalesOrderItems, StockLedger
+from extensions import db
 transactions_bp = Blueprint('transactions', __name__)
 
 # --- Purchase Order APIs ---
