@@ -3,6 +3,7 @@ from models.product import Product
 from models.tax import Tax
 import requests
 import json
+from extensions import db
 
 product_bp = Blueprint("product", __name__)
 
@@ -59,20 +60,16 @@ def get_hsn_code():
     except json.JSONDecodeError:
         return jsonify({"error": "Invalid response from GST Portal, could not decode JSON."}), 500
 
-@product_bp.route("/creare_product", methods=["POST"])
+@product_bp.route("/create_product", methods=["POST"])
 def create_product():
     data = request.get_json() or {}
+    
     product_name = data.get("product_name")
-    type = data.get("product_type")
-    sales_price = data.get("sales_price")
-    category = data.get("category")
-    purchase_price = data.get("purchase_price")
-    hsn_code = data.get("hsn_code")
+    if not product_name:
+        return jsonify({"msg": "Product name is required"}), 400
+    
     sales_tax = data.get("sales_tax")
     purchase_tax = data.get("purchase_tax")
-    
-    if not data or not product_name:
-        return jsonify({"msg": "Product name is required"}), 400
     
     sales_tax_id = None
     purchase_tax_id = None
@@ -83,6 +80,35 @@ def create_product():
             return jsonify({"msg": f"Sales tax '{sales_tax}' not found in the database."}), 404
         sales_tax_id = sales_tax_obj.tax_id
     
+    if purchase_tax:
+        purchase_tax_obj = Tax.query.filter_by(tax_name=purchase_tax).first()
+        if not purchase_tax_obj:
+            return jsonify({"msg": f"Purchase tax '{purchase_tax}' not found in the database."}), 404
+        purchase_tax_id = purchase_tax_obj.tax_id
     
-    product = Product
-    return jsonify({"msg": "Product created"}), 201
+    try:
+        new_product = Product(
+            product_name = product_name,
+            type = data.get("product_type"),
+            sales_price = data.get("sales_price"),
+            category = data.get("category"),
+            purchase_price = data.get("purchase_price"),
+            hsn_code = data.get("hsn_code"),
+            sales_tax_id = sales_tax_id,
+            purchase_tax_id = purchase_tax_id
+        )
+        
+        db.session.add(new_product)
+        db.session.commit()
+        
+        return jsonify({"msg": "Product created"}), 201
+    
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"msg": f"Error creating product: {str(e)}"}), 500
+    
+@product_bp.route("/get_products", methods=["GET"])
+def get_products():
+    products = Product.query.all()
+    result = [{"id": p.product_id, "name": p.product_name, "price": str(p.sales_price)} for p in products]
+    return jsonify(result), 200

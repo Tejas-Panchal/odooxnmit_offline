@@ -66,7 +66,7 @@ def create_tax():
 @jwt_required()
 def create_coa_account():
     data = request.get_json()
-    new_account = ChartOfAccounts(**data)
+    new_account = ChartOfAccount(**data)
     db.session.add(new_account)
     db.session.commit()
     return jsonify({"msg": "Account created", "id": new_account.account_id}), 201

@@ -10,4 +10,4 @@ protected_bp = Blueprint("api", __name__)
 def protected():
     user_id = get_jwt_identity()
     user = User.query.get(user_id)
-    return jsonify({"logged_in_as": user.name}), 200
+    return jsonify({"logged_in_as": user.name, "role": user.role}), 200

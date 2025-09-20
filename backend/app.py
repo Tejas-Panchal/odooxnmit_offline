@@ -5,6 +5,9 @@ from routes.auth import auth_bp
 from routes.protected import protected_bp
 from routes.product import product_bp
 from routes.master import master_bp
+from routes.transaction import transactions_bp
+# from routes.reports import reports_bp
+from routes.tax import tax_bp
 
 from models.user import User
 from models.product import Product
@@ -30,6 +33,9 @@ def create_app():
     app.register_blueprint(protected_bp, url_prefix="/api")
     app.register_blueprint(product_bp, url_prefix="/product")
     app.register_blueprint(master_bp, url_prefix="/master")
+    app.register_blueprint(transactions_bp, url_prefix="/transactions")
+    # app.register_blueprint(reports_bp, url_prefix="/reports")
+    app.register_blueprint(tax_bp, url_prefix="/tax")
 
     with app.app_context():
         db.create_all()

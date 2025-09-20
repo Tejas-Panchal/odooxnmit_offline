@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from werkzeug.security import generate_password_hash, check_password_hash
+from flask_bcrypt import Bcrypt
 from models.user import User
 from extensions import db
 from flask_jwt_extended import create_access_token
@@ -24,9 +24,12 @@ def register():
     if User.query.filter_by(email=email).first():
         return jsonify({"msg": "User email already exists"}), 400
     
+    if User.query.filter_by(user_id=loginId).first():
+        return jsonify({"msg": "Login Id already exists"}), 400
+    
     otp_code = str(random.randint(100000, 999999))
     expires = datetime.datetime.utcnow() + datetime.timedelta(minutes=5)
-    hashed = generate_password_hash(password)
+    hashed = bcrypt.generate_password_hash(password).decode('utf-8')
     
     user = User(
     user_id=loginId,
@@ -37,13 +40,17 @@ def register():
     otp=otp_code,
     otp_expires=expires,
     )
-
+    
+    try:
+        msg = Message("OTP code", recipients=[email])
+        msg.body = f"Your OTP code is: {otp_code}"
+        mail.send(msg)
+    except Exception as e:
+        return jsonify({"msg": "Failed to send OTP"}), 500
+            
     db.session.add(user)
     db.session.commit()
     
-    msg = Message("OTP code", recipients=[email])
-    msg.body = f"Your OTP code is: {otp_code}"
-    mail.send(msg)
 
     return jsonify({"msg": "User created and sent OTP"}), 201
 
