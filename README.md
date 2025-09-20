@@ -32,26 +32,16 @@ Shiv Accounts Cloud enables:
 
 ## Master Data Modules
 1. **Contact Master**  
-   - Fields: Name, Type (Customer/Vendor/Both), Email, Mobile, Address, Profile Image.  
-   - Example:  
-     - Vendor: *Azure Furniture*  
-     - Customer: *Nimesh Pathak*  
+   - Fields: Name, Type (Customer/Vendor/Both), Email, Mobile, Address, Profile Image.   
 
 2. **Product Master**  
-   - Fields: Product Name, Type (Goods/Service), Sales Price, Purchase Price, Sale Tax %, Purchase Tax %, HSN Code, Category.  
-   - Example: *Office Chair, Wooden Table, Sofa*  
+   - Fields: Product Name, Type (Goods/Service), Sales Price, Purchase Price, Sale Tax %, Purchase Tax %, HSN Code, Category.
 
 3. **Tax Master**  
-   - Fields: Tax Name, Computation Method (Percentage/Fixed), Applicable on Sales/Purchase.  
-   - Example: GST 5%, GST 10%  
+   - Fields: Tax Name, Computation Method (Percentage/Fixed), Applicable on Sales/Purchase.
 
 4. **Chart of Accounts (CoA)**  
    - Fields: Account Name, Type (Asset, Liability, Expense, Income, Equity).  
-   - Example:  
-     - Assets: Cash, Bank, Debtors  
-     - Liabilities: Creditors  
-     - Income: Sales Income  
-     - Expenses: Purchase Expense  
 
 ## Transaction Flow
 1. **Purchase Order** → Select Vendor, Product, Quantity, Tax.  
@@ -132,3 +122,4 @@ System generates reports in real time:
 - Advanced user and permission management
 - Real-time synchronization
 - Automated testing and CI/CD pipeline
+
