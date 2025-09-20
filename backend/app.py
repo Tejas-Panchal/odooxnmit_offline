@@ -39,7 +39,7 @@ def create_app():
     app.register_blueprint(transactions_bp, url_prefix="/api")
     # app.register_blueprint(reports_bp, url_prefix="/reports")
     app.register_blueprint(tax_bp, url_prefix="/api")
-    app.register_blueprint(contact_bp, url_prefix="/api")
+    app.register_blueprint(contact_bp, url_prefix="/contact")
     app.register_blueprint(coa_bp, url_prefix="/api")
     app.register_blueprint(po_bp, url_prefix="/api")
     

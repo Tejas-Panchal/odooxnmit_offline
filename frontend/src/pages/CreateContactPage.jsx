@@ -1,4 +1,6 @@
 import React from 'react';
+import { CreateContact } from '../features/ContactAuth';
+import { useNavigate } from 'react-router-dom';
 
 // --- Re-usable SVG Icons ---
 
@@ -81,10 +83,21 @@ const CreateContactPage = () => {
     const [email, setEmail] = React.useState('');
     const [phone, setPhone] = React.useState('');
     const [address, setAddress] = React.useState('');
+    const [type, setType] = React.useState('');
+    const navigate = useNavigate();
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        
+        CreateContact(name, email, phone, address, type)
+            .then((data) => {
+                console.log("Contact created successfully:", data);
+            })
+            .catch((error) => {
+                console.error("Error creating contact:", error);
+            })
+            .finally(() => {
+                navigate('/Contacts_Master');
+            });
     };
 
     return (
@@ -99,21 +112,49 @@ const CreateContactPage = () => {
                         Create New Contact
                     </h2>
 
-                    <form>
+                    <form onSubmit={handleSubmit}>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-x-12">
                             {/* Left Column for Form Fields */}
                             <div className="md:col-span-2 space-y-6">
                                 <FormField label="Contact Name">
-                                    <input type="text" placeholder="Enter contact name" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500" />
+                                    <input 
+                                    value={name}
+                                    required
+                                    onChange={(e) => setName(e.target.value)}
+                                    type="text" placeholder="Enter contact name" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500" />
                                 </FormField>
                                 <FormField label="Email">
-                                    <input type="email" placeholder="Enter email adress of contact" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500" />
+                                    <input 
+                                    value={email}
+                                    required
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    type="email" placeholder="Enter email adress of contact" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500" />
                                 </FormField>
                                 <FormField label="Phone Number">
-                                    <input type="tel" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500" />
+                                    <input 
+                                    value={phone}
+                                    required
+                                    onChange={(e) => setPhone(e.target.value)}
+                                    type="tel" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500" />
                                 </FormField>
                                 <FormField label="Address">
-                                    <textarea rows="4" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"></textarea>
+                                    <textarea 
+                                    value={address}
+                                    required
+                                    onChange={(e) => setAddress(e.target.value)}
+                                    rows="4" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"></textarea>
+                                </FormField>
+                                <FormField label="type">
+                                    <select
+                                        value={type}
+                                        onChange={(e) => setType(e.target.value)}
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                                    >
+                                        <option value="">Select type</option>
+                                        <option value="Customer">Customer</option>
+                                        <option value="Vendor">Vendor</option>
+                                        <option value="Both">Both</option>
+                                    </select>
                                 </FormField>
                             </div>
 
@@ -129,7 +170,9 @@ const CreateContactPage = () => {
 
                         {/* Action Buttons */}
                         <div className="flex justify-center space-x-4 mt-10 pt-6 border-t border-gray-200">
-                            <button type="button" className="bg-gray-600 text-white font-semibold py-2 px-10 rounded-full hover:bg-gray-700 transition duration-300">
+                            <button 
+                            onClick={() => {window.history.back();}}
+                            type="button" className="bg-gray-600 text-white font-semibold py-2 px-10 rounded-full hover:bg-gray-700 transition duration-300">
                                 Cancel
                             </button>
                             <button type="submit" className="bg-teal-500 text-white font-semibold py-2 px-10 rounded-full hover:bg-teal-600 transition duration-300">

@@ -1,5 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { CreateUser as CreateUserAPI } from '../features/Auth';
+
 
 // You can replace these with your actual image paths
 const logoUrl = 'https://i.imgur.com/sC44oMA.png'; // Placeholder for Shiv Accounts Cloud logo
@@ -21,11 +23,37 @@ const ArrowLeftIcon = () => (
 
 
 const CreateUser = () => {
+  
+  const [name, setName] = React.useState('');
+  const [role, setRole] = React.useState('');
+  const [loginId, setLoginId] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [confirmPassword, setConfirmPassword] = React.useState('');
+  const [errorMessage, setErrorMessage] = React.useState('');
+  const [email, setEmail] = React.useState('');
+
   const navigate = useNavigate();
 
   const handleBack = () => {
     navigate(-1); // Go back to previous page
-  };
+  };  
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (password !== confirmPassword) {
+      setErrorMessage("Passwords do not match");
+      return;
+    }
+    // Call the create user API
+    CreateUserAPI(name, role, loginId, password, email)
+      .then((data) => {
+        console.log("User created successfully:", data);
+        navigate("/Contacts_Master"); // Navigate to Contacts Master page after successful creation
+      })
+      .catch((error) => {
+        console.error("Error creating user:", error);
+        setErrorMessage("Failed to create user");
+      });
+  }
 
   return (
     <div className="bg-[#f3f4f6] min-h-screen font-sans">
@@ -49,7 +77,14 @@ const CreateUser = () => {
             Create New User
           </h2>
 
-          <form>
+          {/* Error Message Display */}
+          {errorMessage && (
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+              {errorMessage}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-6">
               {/* Name Field */}
               <div className="flex items-center space-x-4">
@@ -57,6 +92,9 @@ const CreateUser = () => {
                 <input
                   type="text"
                   id="name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
                   placeholder="Name"
                   className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
@@ -67,13 +105,16 @@ const CreateUser = () => {
                 <label htmlFor="role" className="w-24 text-right font-medium text-gray-700">Role :</label>
                 <select
                   id="role"
+                  value={role}
+                  onChange={(e) => setRole(e.target.value)}
+                  required
                   className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 appearance-none bg-white bg-no-repeat bg-right pr-8"
                   style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")` }}
                 >
-                  <option disabled selected>select user role</option>
-                  <option>Admin</option>
-                  <option>Invoicing User</option>
-                  <option>Contact</option>
+                  <option value="" disabled>select user role</option>
+                  <option value="Admin">Admin</option>
+                  <option value="Accountant">Accountant</option>
+                  <option value="Contact">Contact</option>
                 </select>
               </div>
 
@@ -84,6 +125,9 @@ const CreateUser = () => {
                     <input
                         type="text"
                         id="loginId"
+                        value={loginId}
+                        onChange={(e) => setLoginId(e.target.value)}
+                        required
                         placeholder="Login ID"
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                     />
@@ -101,6 +145,9 @@ const CreateUser = () => {
                 <input
                   type="email"
                   id="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
                   placeholder="Email"
                   className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
@@ -117,6 +164,9 @@ const CreateUser = () => {
                     <input
                         type="password"
                         id="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
                         placeholder="Password"
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                     />
@@ -131,7 +181,11 @@ const CreateUser = () => {
                  <div className="w-24"></div> {/* Spacer to align with labels */}
                  <input
                     type="password"
-                    placeholder="confirm Password"
+                    id="confirmPassword"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    required
+                    placeholder="Confirm Password"
                     className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                  />
               </div>
@@ -142,6 +196,7 @@ const CreateUser = () => {
             <div className="mt-10 flex justify-start space-x-4 ml-28">
               <button
                 type="button"
+                onClick={handleBack}
                 className="bg-[#6b7280] text-white font-semibold py-2 px-8 rounded-full hover:bg-gray-700 transition duration-300"
               >
                 Cancel

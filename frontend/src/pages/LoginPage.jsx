@@ -24,7 +24,7 @@ const LoginPage = () => {
             if (data.role === 'Admin') {
                 navigate("/Contacts_Master");
             } else if (data.role === 'Accountant') {
-            navigate("/dashboard");
+            navigate("/Contacts_Master");
             }else if(data.role === 'Contact'){}
         })
         .catch((error) => {

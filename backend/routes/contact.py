@@ -56,5 +56,15 @@ def create_contact():
 def get_contacts():
     current_user_id = get_jwt_identity()
     contacts = Contact.query.filter_by(created_by=current_user_id).all()
-    result = [{"id": c.contact_id, "name": c.name, "type": c.type} for c in contacts]
+    result = [{
+        "contact_id": c.contact_id,
+        "name": c.name,
+        "email": c.email,
+        "mobile": c.mobile,
+        "address": c.address,
+        "city": c.city,
+        "state": c.state,
+        "pincode": c.pincode,
+        "profile_image": c.profile_image
+    } for c in contacts]
     return jsonify(result), 200

@@ -13,6 +13,8 @@ import ProfitAndLossPage from './pages/ProfitAndLossPage'
 import CreateProductPage from './pages/CreateProductPage'
 import ContactsMasterPage from './pages/ContactsMasterPage'
 import CreateContactPage from './pages/CreateContactPage'
+import CreateUser from './pages/CreateUser'
+import ProductMastersPage from './pages/ProductMastersPage'
 
 const App = () => {
   return (
@@ -32,6 +34,8 @@ const App = () => {
           <Route path="/Create_Product" element={<CreateProductPage />} />
           <Route path="/Contacts_Master" element={<ContactsMasterPage />} />
           <Route path="/Create_Contact" element={<CreateContactPage />} />
+          <Route path="/create-user" element={<CreateUser />} />
+          <Route path="/Product_Masters" element={<ProductMastersPage />} />
         </Routes>
       </Router>
     </div>

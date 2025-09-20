@@ -27,3 +27,12 @@ export const VerifyOtp = async (email, otp) => {
         throw error;
     }
 };
+
+export const CreateUser = async (name, role, loginId, password, email) => {
+    try {
+        const response = await axios.post("http://127.0.0.1:5000/auth/create_user", { name, role, loginId, password, email });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};

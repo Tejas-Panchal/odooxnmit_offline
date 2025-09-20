@@ -68,13 +68,13 @@ def login():
     
 
     token = create_access_token(identity=str(user.user_id))
-    return jsonify({"access_token": token, "username": user.name}), 200
+    return jsonify({"access_token": token, "username": user.name, "role": user.role}), 200
 
 @auth_bp.route("/create_user", methods=["POST"])
 def create_user():
     data = request.get_json() or {}
     name = data.get("name")
-    user_Id=data.get("user_Id")
+    user_Id=data.get("loginId")
     email = data.get("email")
     password = data.get("password")
     role = data.get("role")
@@ -90,6 +90,7 @@ def create_user():
     email=email,
     password_hash=hashed,
     role=role,  
+    is_verified=True
     )
 
     db.session.add(user)
