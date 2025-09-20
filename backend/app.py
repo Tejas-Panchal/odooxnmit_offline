@@ -8,6 +8,7 @@ from routes.master import master_bp
 from routes.transaction import transactions_bp
 # from routes.reports import reports_bp
 from routes.tax import tax_bp
+from routes.contact import contact_bp
 
 from models.user import User
 from models.product import Product
@@ -36,6 +37,7 @@ def create_app():
     app.register_blueprint(transactions_bp, url_prefix="/transactions")
     # app.register_blueprint(reports_bp, url_prefix="/reports")
     app.register_blueprint(tax_bp, url_prefix="/tax")
+    app.register_blueprint(contact_bp, url_prefix="/contact")
 
     with app.app_context():
         db.create_all()

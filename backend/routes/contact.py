@@ -3,9 +3,9 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from models.contact import Contact
 from extensions import db
 
-contact_dp = Blueprint("contact", __name__)
+contact_bp = Blueprint("contact", __name__)
 
-@contact_dp.route("/contacts", methods=["POST"])
+@contact_bp.route("/contacts", methods=["POST"])
 @jwt_required()
 def create_contact():
     current_user_id = get_jwt_identity()
