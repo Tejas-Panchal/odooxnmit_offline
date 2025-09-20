@@ -1,5 +1,6 @@
 from extensions import db
 from datetime import date
+from models.purchase_order import PurchaseOrder
 
 class VendorBill(db.Model):
     __tablename__ = "vendor_bills"
@@ -11,6 +12,7 @@ class VendorBill(db.Model):
     total_amount = db.Column(db.Numeric(12,2), nullable=False)
     status = db.Column(db.String(20), default="Unpaid")
 
+    vendor_id = db.relationship("PurchaseOrder", backref="vendor_bill", cascade="all, delete")
     payments = db.relationship("Payment", backref="bill", cascade="all, delete")
 
     def __repr__(self):
