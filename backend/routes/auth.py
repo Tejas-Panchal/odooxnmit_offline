@@ -68,7 +68,7 @@ def login():
     
 
     token = create_access_token(identity=str(user.user_id))
-    return jsonify({"access_token": token, "username": user.name}), 200
+    return jsonify({"access_token": token, "username": user.name, "role": user.role}), 200
 
 @auth_bp.route("/create_user", methods=["POST"])
 def create_user():
