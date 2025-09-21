@@ -53,29 +53,42 @@ const LoginPage = () => {
     setNotifications((prev) => prev.filter((n) => n.id !== id));
   }, []);
 
-    const handleLogin = (event) => {
-        event.preventDefault();
-        setErrors({});
-        setIsLoading(true);
-        Login(loginId, password)
-        .then((data) => {
-            console.log(data);
-            localStorage.setItem('token', data.access_token);
-            setIsLoading(false);
-            if (data.role === 'Admin') {
-                navigate("/Contacts_Master");
-            } else if (data.role === 'Accountant') {
-            navigate("/Contacts_Master");
-            }else if(data.role === 'Contact'){
-                navigate("/Customer_Invoice");
-            }
-        })
-        .catch((error) => {
-            console.log(error);
-            setErrors(error);
-            setIsLoading(false);
-        });
-    };
+  const handleLogin = (event) => {
+    event.preventDefault();
+    setErrors({});
+    setIsLoading(true);
+    Login(loginId, password)
+      .then((data) => {
+        console.log(data);
+        localStorage.setItem("token", data.access_token);
+        setIsLoading(false);
+        if (data.role === "Admin") {
+          navigate("/Contacts_Master");
+        } else if (data.role === "Accountant") {
+          navigate("/Contacts_Master");
+        } else if (data.role === "Contact") {
+          navigate("/Customer_Invoice");
+        }
+      })
+      .catch((error) => {
+        console.log(error.response.data.msg);
+        if (error.response.data.msg === "Invalid credentials") {
+          triggerNotification(
+            "error",
+            "Error",
+            error.response.data.msg
+          );
+        } else {
+          triggerNotification(
+            "error",
+            "Error",
+            error.message
+          );
+        }
+        setErrors(error);
+        setIsLoading(false);
+      });
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
@@ -190,7 +203,7 @@ const LoginPage = () => {
         </div>
       </footer>
       <div className="notification-container">
-        {notifications.map(n => (
+        {notifications.map((n) => (
           <Notification key={n.id} notification={n} onClose={handleClose} />
         ))}
       </div>

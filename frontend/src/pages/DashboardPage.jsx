@@ -117,7 +117,7 @@ const DashboardPage = () => {
                 <header className="bg-[#714B67] text-white shadow-lg">
                     <div className="container mx-auto flex justify-between items-center px-6 py-4">
                         <div className="flex items-center space-x-3">
-                            <img src={Logo} alt="Logo" className="h-10 w-18 rounded-full" />
+                            <img src={Logo} alt="Logo" className="h-12 w-12 rounded-full" />
                             <h1 className="text-xl font-semibold">Shiv Accounts Cloud</h1>
                         </div>
                         <nav>
