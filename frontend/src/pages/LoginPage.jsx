@@ -25,11 +25,13 @@ const LoginPage = () => {
                 navigate("/Contacts_Master");
             } else if (data.role === 'Accountant') {
             navigate("/Contacts_Master");
-            }else if(data.role === 'Contact'){}
+            }else if(data.role === 'Contact'){
+                navigate("/Customer_Invoice");
+            }
         })
         .catch((error) => {
             console.log(error);
-            setErrors(error.response);
+            setErrors(error);
             setIsLoading(false);
         });
     };

@@ -19,3 +19,12 @@ export const GetContacts = async () => {
         throw error;
     }
 };
+
+export const GetCustomers = async () => {
+    try {
+        const response = await axios.get("http://localhost:5000/contact/customer_contacts", { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });     
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};

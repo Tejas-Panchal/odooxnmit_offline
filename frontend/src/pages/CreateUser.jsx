@@ -73,7 +73,7 @@ const CreateUser = () => {
       {/* Main Content Area */}
       <main className="flex justify-center items-center py-10 px-4">
         <div className="bg-white p-8 rounded-2xl shadow-xl border-t-[3px] border-[#a0e0d4] w-full max-w-5xl">
-          <h2 style={{ fontFamily: "'Brush Script MT', cursive", color: '#008080' }} className="text-4xl mb-8">
+          <h2 style={{ color: '#008080' }} className="text-4xl mb-8">
             Create New User
           </h2>
 

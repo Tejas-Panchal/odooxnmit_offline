@@ -68,3 +68,21 @@ def get_contacts():
         "profile_image": c.profile_image
     } for c in contacts]
     return jsonify(result), 200
+
+@contact_bp.route("/customer_contacts", methods=["GET"])
+@jwt_required()
+def get_customer_contacts():
+    current_user_id = get_jwt_identity()
+    contacts = Contact.query.filter_by(created_by=current_user_id, type="Customer").all()
+    result = [{
+        "contact_id": c.contact_id,
+        "name": c.name,
+        "email": c.email,
+        "mobile": c.mobile,
+        "address": c.address,
+        "city": c.city,
+        "state": c.state,
+        "pincode": c.pincode,
+        "profile_image": c.profile_image
+    } for c in contacts]
+    return jsonify(result), 200

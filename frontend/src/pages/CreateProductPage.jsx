@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { CreateProduct, GetHSNs } from '../features/ProductAuth';
 
 // --- Re-usable SVG Icons ---
 
@@ -46,16 +48,23 @@ const PageHeader = () => (
     </header>
 );
 
-const PageSubHeader = () => (
-    <div className="bg-white shadow-sm">
-        <div className="container mx-auto px-6 py-2">
-            <button className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 font-semibold">
-                <ArrowLeftIcon />
-                <span>Back</span>
-            </button>
+const PageSubHeader = () => {
+    const navigate = useNavigate();
+    
+    return (
+        <div className="bg-white shadow-sm">
+            <div className="container mx-auto px-6 py-2">
+                <button 
+                    onClick={() => navigate(-1)}
+                    className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 font-semibold"
+                >
+                    <ArrowLeftIcon />
+                    <span>Back</span>
+                </button>
+            </div>
         </div>
-    </div>
-);
+    );
+};
 
 // A reusable component for form fields to keep the form code DRY
 const FormField = ({ label, children }) => (
@@ -71,6 +80,68 @@ const FormField = ({ label, children }) => (
 // --- The Main Create Product Page Component ---
 
 const CreateProductPage = () => {
+    const [name, setName] = React.useState('');
+    const [type, setType] = React.useState('');
+    const [hsn, setHsn] = React.useState('');
+    const [hsnOptions, setHsnOptions] = React.useState([]);
+    const [category, setCategory] = React.useState('');
+    const [salesPrice, setSalesPrice] = React.useState('');
+    const [salesTax, setSalesTax] = React.useState('');
+    const [purchasePrice, setPurchasePrice] = React.useState('');
+    const [purchaseTax, setPurchaseTax] = React.useState('');
+    const [loading, setLoading] = React.useState(false);
+    const [error, setError] = React.useState('');
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchHSNs = async () => {
+            if (!name.trim()) {
+                setHsnOptions([]);
+                return;
+            }
+
+            try {
+                setLoading(true);
+                const data = await GetHSNs(name);
+                setHsnOptions(data.data);
+                setError('');
+            } catch (error) {
+                console.error("Error fetching HSNs:", error);
+                setHsnOptions([]);
+                setError('Failed to fetch HSN codes');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        const timeoutId = setTimeout(fetchHSNs, 500); // Debounce API calls
+        return () => clearTimeout(timeoutId);
+    }, [name]);
+
+    console.log("Fetched HSN Options:", hsnOptions);
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        
+        if (!name.trim()) {
+            setError('Product name is required');
+            return;
+        }
+        
+        try {
+            setLoading(true);
+            setError('');
+            const result = await CreateProduct(name, type,salesPrice, category, purchasePrice, hsn, salesTax, purchaseTax);
+            console.log("Product created successfully:", result);
+            navigate("/Product_Masters");
+        } catch (error) {
+            console.error("Error creating product:", error);
+            setError('Failed to create product. Please try again.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <div className="flex flex-col min-h-screen bg-gray-100 font-sans">
             <PageHeader />
@@ -83,55 +154,114 @@ const CreateProductPage = () => {
                         Create New Product
                     </h2>
 
-                    <form>
+                    {/* Error Message Display */}
+                    {error && (
+                        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+                            {error}
+                        </div>
+                    )}
+
+                    <form onSubmit={handleSubmit}>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
                             {/* Left Column */}
                             <div className="space-y-6">
                                 <FormField label="Product Name">
-                                    <input type="text" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500" />
+                                    <input 
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                    required
+                                    type="text" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500" />
                                 </FormField>
                                 <FormField label="Product Type">
-                                    <div className="flex space-x-6">
-                                        <label className="flex items-center space-x-2"><input type="radio" name="productType" className="form-radio accent-purple-600" defaultChecked /><span>Goods</span></label>
-                                        <label className="flex items-center space-x-2"><input type="radio" name="productType" className="form-radio accent-purple-600" /><span>Services</span></label>
-                                    </div>
+                                    <select
+                                    value={type}
+                                    onChange={(e) => setType(e.target.value)}
+                                    required
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                                    >
+                                        <option value="">Select Product Type</option>
+                                        <option value="Goods">Goods</option>
+                                        <option value="Services">Services</option>
+                                    </select>
                                 </FormField>
                                 <FormField label="HSN/SAC Code">
-                                    <input type="text" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500" />
+                                   <select
+                                   value={hsn}
+                                   onChange={(e) => setHsn(e.target.value)}
+                                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                                   disabled={loading || hsnOptions.length === 0}
+                                   >
+                                       <option value="">
+                                           {loading ? 'Loading HSN codes...' : 
+                                            hsnOptions.length === 0 ? 'Enter product name to see HSN codes' : 
+                                            'Select HSN/SAC Code'}
+                                       </option>
+                                       {hsnOptions.map((option, index) => (
+                                           <option key={option.id || index} value={option.c}>
+                                               {index + 1}. {option.c} - {option.n}
+                                           </option>
+                                       ))}
+                                   </select>
                                 </FormField>
                                 <FormField label="Category">
-                                    <select className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 bg-white appearance-none" style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em' }}>
-                                        <option>select category</option>
-                                        <option>Category 1</option>
-                                        <option>Category 2</option>
-                                    </select>
+                                    <input 
+                                    required
+                                    value={category}
+                                    onChange={(e) => setCategory(e.target.value)}
+                                    type="text" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500" />
                                 </FormField>
                             </div>
 
                             {/* Right Column */}
                             <div className="space-y-6">
                                 <FormField label="Sale Price">
-                                    <input type="text" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500" />
+                                    <input 
+                                    type="number"
+                                    step="0.01"
+                                    value={salesPrice}
+                                    onChange={(e) => setSalesPrice(e.target.value)}
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500" />
                                 </FormField>
                                 <FormField label="Sales Tax">
-                                    <input type="text" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500" />
+                                    <input 
+                                    type="text"
+                                    value={salesTax}
+                                    onChange={(e) => setSalesTax(e.target.value)}
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500" />
                                 </FormField>
                                 <FormField label="Purchase Price">
-                                    <input type="text" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500" />
+                                    <input 
+                                    type="number"
+                                    step="0.01"
+                                    value={purchasePrice}
+                                    onChange={(e) => setPurchasePrice(e.target.value)}
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500" />
                                 </FormField>
                                 <FormField label="Purchase Tax">
-                                    <input type="text" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500" />
+                                    <input 
+                                    type="text"
+                                    value={purchaseTax}
+                                    onChange={(e) => setPurchaseTax(e.target.value)}
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500" />
                                 </FormField>
                             </div>
                         </div>
 
                         {/* Action Buttons */}
                         <div className="flex justify-center space-x-4 mt-10 pt-6">
-                            <button type="button" className="bg-gray-600 text-white font-semibold py-2 px-10 rounded-full hover:bg-gray-700 transition duration-300">
+                            <button 
+                                type="button" 
+                                onClick={() => navigate("/Product_Masters")}
+                                className="bg-gray-600 text-white font-semibold py-2 px-10 rounded-full hover:bg-gray-700 transition duration-300"
+                            >
                                 Cancel
                             </button>
-                            <button type="submit" className="bg-teal-500 text-white font-semibold py-2 px-10 rounded-full hover:bg-teal-600 transition duration-300">
-                                Save
+                            <button 
+                                type="submit" 
+                                disabled={loading}
+                                className="bg-teal-500 text-white font-semibold py-2 px-10 rounded-full hover:bg-teal-600 transition duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                            >
+                                {loading ? 'Saving...' : 'Save'}
                             </button>
                         </div>
                     </form>

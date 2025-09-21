@@ -1,4 +1,6 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { GetSalesOrders } from '../features/SalesOrderAuth';
 
 
 // A unique header specifically for the Sales Order page
@@ -9,10 +11,10 @@ const PageHeader = () => (
                 <h1 className="text-4xl font-bold">Sales Order</h1>
             </div>
             <nav className="flex items-center space-x-4">
-                <button className="bg-green-400 text-green-900 px-5 py-1.5 rounded-md font-bold hover:bg-green-300 transition-colors">New</button>
                 <button 
-                onClick={() => window.location.href = '/dashboard'}
-                className="bg-gray-200 text-gray-800 px-5 py-1.5 rounded-md font-bold hover:bg-gray-300">Home</button>
+                onClick={() => window.location.href = '/Create_Sales_Order'}
+                className="bg-green-400 text-green-900 px-5 py-1.5 rounded-md font-bold hover:bg-green-300 transition-colors">New</button>
+                
                 <button 
                 onClick={() => window.history.back()}
                 className="bg-gray-200 text-gray-800 px-5 py-1.5 rounded-md font-bold hover:bg-gray-300">Back</button>
@@ -33,10 +35,23 @@ const InfoField = ({ label, children }) => (
 
 const SalesOrderPage = () => {
     // Data for the items table
-    const tableItems = [
-        { sr: 1, product: 'Table', qty: 6, price: '3,100', untaxed: '19,600', untaxedNote: '(6 qty * 3100)', tax: '10%', taxAmt: '1,860', taxAmtNote: '(19600 * 10%)', total: '20,460', totalNote: '(19600 + 1860)' },
-        { sr: 3, product: 'Chair', qty: 3, price: '1,000', untaxed: '3,000', untaxedNote: '(3 qty * 1000)', tax: '5%', taxAmt: '150', taxAmtNote: '(3000 * 5%)', total: '3,150', totalNote: '(3000 + 150)' },
-    ];
+    const [tableItems, setTableItems] = React.useState([]);
+    const navigate = useNavigate();
+
+    React.useEffect(() => {
+        const fetchSalesOrders = async () => {
+            try {
+                const orders = await GetSalesOrders();
+                setTableItems(orders);
+            } catch (error) {
+                console.error("Error fetching sales orders:", error);
+            }
+        };
+
+        fetchSalesOrders();
+    }, []);
+
+    console.log("Sales Orders Data:", tableItems);
 
     return (
         <div className="bg-gray-100 min-h-screen font-sans">

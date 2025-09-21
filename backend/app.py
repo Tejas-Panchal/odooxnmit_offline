@@ -11,6 +11,7 @@ from routes.tax import tax_bp
 from routes.contact import contact_bp
 from routes.chart_of_account import coa_bp
 from routes.purchase_orders import po_bp
+from routes.sales import sales_bp
 
 from models.user import User
 from models.product import Product
@@ -42,7 +43,7 @@ def create_app():
     app.register_blueprint(contact_bp, url_prefix="/contact")
     app.register_blueprint(coa_bp, url_prefix="/api")
     app.register_blueprint(po_bp, url_prefix="/api")
-    
+    app.register_blueprint(sales_bp, url_prefix="/api")
 
     with app.app_context():
         db.create_all()

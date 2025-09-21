@@ -39,6 +39,7 @@ const profileImageUrl = 'https://images.unsplash.com/photo-1534528741775-53994a6
 const PageHeader = ({ userRole }) => {
     const [isReportDropdownOpen, setIsReportDropdownOpen] = useState(false);
     const [isUserManagementDropdownOpen, setIsUserManagementDropdownOpen] = useState(false);
+    const [isSalesOrderDropdownOpen, setIsSalesOrderDropdownOpen] = useState(false);
 
     const reportOptions = [
         { name: 'Balance Sheet', path: '/reports/sales' },
@@ -50,6 +51,11 @@ const PageHeader = ({ userRole }) => {
         { name: 'Create User', path: '/create-user' },
     ];
 
+    const usersSalesOrder = [
+        { name: 'Sales Orders', path: '/Sales_Order' },
+        { name: 'Create Sales Order', path: '/create-sales-order' }
+    ];
+
     const handleReportSelect = (reportPath) => {
         setIsReportDropdownOpen(false);
         window.location.href = reportPath;
@@ -58,6 +64,11 @@ const PageHeader = ({ userRole }) => {
     const handleUserManagementSelect = (userPath) => {
         setIsUserManagementDropdownOpen(false);
         window.location.href = userPath;
+    };
+
+    const handleSalesOrderSelect = (salesPath) => {
+        setIsSalesOrderDropdownOpen(false);
+        window.location.href = salesPath;
     };
 
     // Close dropdown when clicking outside - only for Admin dropdowns
@@ -71,13 +82,16 @@ const PageHeader = ({ userRole }) => {
             if (isUserManagementDropdownOpen && !event.target.closest('.user-management-dropdown')) {
                 setIsUserManagementDropdownOpen(false);
             }
+            if (isSalesOrderDropdownOpen && !event.target.closest('.sales-order-dropdown')) {
+                setIsSalesOrderDropdownOpen(false);
+            }
         };
 
         document.addEventListener('mousedown', handleClickOutside);
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
-    }, [isReportDropdownOpen, isUserManagementDropdownOpen, userRole]);
+    }, [isReportDropdownOpen, isUserManagementDropdownOpen, isSalesOrderDropdownOpen, userRole]);
 
     return (
         <header className="bg-[#5a2d5d] text-white shadow-lg">
@@ -96,9 +110,41 @@ const PageHeader = ({ userRole }) => {
                 <nav className="hidden md:flex items-center space-x-8">
                     <a href="#" className="hover:text-gray-300">Purchase</a>
                     
-                    {/* Product Master - Only for Accountant */}
+                    {/* Sales Order Dropdown - Available for Admin and Accountant */}
+                    {(userRole === 'Admin' || userRole === 'Accountant') && (
+                        <div className="relative sales-order-dropdown">
+                            <button 
+                                onClick={() => setIsSalesOrderDropdownOpen(!isSalesOrderDropdownOpen)}
+                                className="flex items-center space-x-1 hover:text-gray-300 focus:outline-none"
+                            >
+                                <span>Sales Order</span>
+                                <ChevronDownIcon />
+                            </button>
+                            
+                            {isSalesOrderDropdownOpen && (
+                                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50 border border-gray-200">
+                                    <div className="py-2">
+                                        {usersSalesOrder.map((option, index) => (
+                                            <button
+                                                key={index}
+                                                onClick={() => handleSalesOrderSelect(option.path)}
+                                                className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors"
+                                            >
+                                                {option.name}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    )}
+                    
+                    {/* Product Master and Taxes Master - Only for Accountant */}
                     {userRole === 'Accountant' && (
-                        <a href="/Product_Masters" className="hover:text-gray-300">Product Master</a>
+                        <>
+                            <a href="/Product_Masters" className="hover:text-gray-300">Product Master</a>
+                            <a href="/Taxes_Master" className="hover:text-gray-300">Taxes Master</a>
+                        </>
                     )}
                     
                     {/* User Management Dropdown - Only for Admin */}
@@ -158,6 +204,12 @@ const PageHeader = ({ userRole }) => {
                             )}
                         </div>
                     )}
+                    <button 
+                    onClick={() => {
+                        localStorage.removeItem('token');
+                        window.location.href = '/login';
+                    }}
+                    className="bg-gray-200 text-gray-800 px-5 py-1.5 rounded-md font-bold hover:bg-gray-300 transition-colors">Log Out</button>
                     
                     <img src={profileImageUrl} alt="User Profile" className="h-10 w-10 rounded-full object-cover" />
                 </nav>

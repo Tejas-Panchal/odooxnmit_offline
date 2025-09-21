@@ -33,26 +33,26 @@ def create_tax():
     if not data:
         return jsonify({"error": "No data provided"}), 400
     
-    required_fields = ["tax_name", "computation_method", "value", "applicable_on"]
+    required_fields = ["name", "computation", "value", "taxFor"]
     for field in required_fields:
         if field not in data:
             return jsonify({"error": f"Field '{field}' is required"}), 400
-    
-    if data["computation_method"] not in ["Fixed", "Percentage"]:
+
+    if data["computation"] not in ["Fixed", "Percentage"]:
         return jsonify({"error": "Invalid computation method"}), 400
-    
-    if data["applicable_on"] not in ["Sales", "Purchase", "Both"]:
-        return jsonify({"error": "Invalid applicable_on field"}), 400
-    
-    if Tax.query.filter_by(tax_name=data["tax_name"]).first():
+
+    if data["taxFor"] not in ["Sales", "Purchase", "Both"]:
+        return jsonify({"error": "Invalid taxFor field"}), 400
+
+    if Tax.query.filter_by(tax_name=data["name"]).first():
         return jsonify({"error": "Tax name already exists"}), 400
     
     try:
         new_tax = Tax(
-            tax_name = data["tax_name"],
-            computation_method = data["computation_method"],
+            tax_name = data["name"],
+            computation_method = data["computation"],
             value = data["value"],
-            applicable_on = data["applicable_on"]
+            applicable_on = data["taxFor"]
         )
         
         db.session.add(new_tax)

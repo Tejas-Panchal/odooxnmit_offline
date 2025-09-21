@@ -127,3 +127,13 @@ def verify_otp():
     db.session.commit()
 
     return jsonify({"msg": "OTP verified", "access_token": access_token}), 200
+
+@auth_bp.route("/get_users", methods=["GET"])
+@jwt_required()
+def get_users():
+    current_user = get_jwt_identity()
+    if not current_user:
+        return jsonify({"msg": "User not found"}), 404
+
+    users = User.query.filter_by(role="Contact").all()
+    return jsonify([{"id": user.user_id, "name": user.name, "email": user.email, "role": user.role} for user in users]), 200

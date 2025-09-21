@@ -1,6 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { GetProducts } from '../features/ProductAuth';
+import { GetTaxes } from '../features/TaxAuth';
 
 // --- Re-usable SVG Icons ---
 
@@ -46,6 +45,8 @@ const PageHeader = () => (
             </div>
             <nav className="hidden md:flex items-center space-x-8">
                 <a href="#" className="hover:text-gray-300">Purchase</a>
+                <a href="#" className="hover:text-gray-300">Sale</a>
+                <a href="#" className="hover:text-gray-300">Report</a>
                 <img src={profileImageUrl} alt="User Profile" className="h-10 w-10 rounded-full object-cover" />
             </nav>
         </div>
@@ -59,35 +60,34 @@ const PageSubHeader = () => (
 );
 
 
-// --- The Main Product Masters Page Component ---
+// --- The Main Taxes Master Page Component ---
 
-const ProductMastersPage = () => {
+const TaxesMasterPage = () => {
 
-    const [products, setProducts] = React.useState([]);
+    const [taxes, setTaxes] = React.useState([]);
     const [loading, setLoading] = React.useState(true);
     const [error, setError] = React.useState(null);
-    const navigate = useNavigate();
 
     React.useEffect(() => {
-        const fetchProducts = async () => {
+        const fetchTaxes = async () => {
             try {
                 setLoading(true);
-                const data = await GetProducts();
-                setProducts(data);
+                const data = await GetTaxes();
+                setTaxes(data);
                 setError(null);
             } catch (err) {
-                setError('Failed to fetch products');
-                console.error("Error fetching products:", err);
+                setError('Failed to fetch taxes');
+                console.error("Error fetching taxes:", err);
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchProducts();
+        fetchTaxes();
     }, []);
 
+    console.log("Taxes Data:", taxes);
     const emptyRows = Array(2).fill({});
-    console.log("Products Data:", products);
 
     return (
         <div className="flex flex-col min-h-screen bg-gray-100 font-sans">
@@ -99,9 +99,9 @@ const ProductMastersPage = () => {
                 
                 {/* New Button */}
                 <div className="flex justify-end mb-4">
-                    <h4 className="text-3xl text-gray-500 mr-auto">Product Masters</h4>
+                    <h3 className="text-3xl text-gray-500 mr-auto">Taxes Master</h3>
                     <button 
-                    onClick={() => window.location.href = '/Create_Product'}
+                    onClick={() => window.location.href = '/Create_New_Tax'}
                     className="flex items-center space-x-2 bg-green-300 text-green-800 font-bold py-2 px-4 rounded-full hover:bg-green-400 transition-colors">
                         <span>New</span>
                         <div className="bg-white rounded-full p-0.5">
@@ -110,14 +110,14 @@ const ProductMastersPage = () => {
                     </button>
                 </div>
 
-                {/* Products Table */}
+                {/* Taxes Table */}
                 <div className="bg-white rounded-lg shadow-lg overflow-hidden">
                     <div className="overflow-x-auto">
                         <table className="w-full">
                             {/* Table Header */}
                             <thead className="bg-gray-700 text-white">
                                 <tr>
-                                    {['Product Name', 'Product Type', 'Category', 'HSN/SAC code', 'Purchase Price', 'Purchase Tax', 'Sales Price', 'Sales Tax'].map(header => (
+                                    {['Tax Name', 'Tax Computation', 'Tax for', 'Tax Value'].map(header => (
                                         <th key={header} className="p-3 text-left font-semibold tracking-wide border-l border-gray-600 first:border-l-0">{header}</th>
                                     ))}
                                 </tr>
@@ -127,49 +127,39 @@ const ProductMastersPage = () => {
                             <tbody className="divide-y divide-gray-200">
                                 {loading ? (
                                     <tr>
-                                        <td colSpan="8" className="p-8 text-center text-gray-500">
-                                            Loading products...
+                                        <td colSpan="4" className="p-8 text-center text-gray-500">
+                                            Loading taxes...
                                         </td>
                                     </tr>
                                 ) : error ? (
                                     <tr>
-                                        <td colSpan="8" className="p-8 text-center text-red-500">
+                                        <td colSpan="4" className="p-8 text-center text-red-500">
                                             {error}
                                         </td>
                                     </tr>
-                                ) : products.length === 0 ? (
+                                ) : taxes.length === 0 ? (
                                     <tr>
-                                        <td colSpan="8" className="p-8 text-center text-gray-500">
-                                            No products found. Create your first product!
+                                        <td colSpan="4" className="p-8 text-center text-gray-500">
+                                            No taxes found. Create your first tax!
                                         </td>
                                     </tr>
                                 ) : (
-                                    products.map((product, index) => (
-                                        <tr key={product.id || index} className="hover:bg-gray-50">
-                                            <td className="p-3 border-r text-gray-800">{product.name}</td>
-                                            <td className="p-3 border-r text-gray-800">{product.type}</td>
-                                            <td className="p-3 border-r text-gray-800">{product.category || 'N/A'}</td>
-                                            <td className="p-3 border-r text-gray-800">{product.hsn || 'N/A'}</td>
-                                            <td className="p-3 border-r text-right text-gray-800">
-                                                {product.purchasePrice ? `₹${parseFloat(product.purchasePrice).toLocaleString()}` : 'N/A'}
+                                    taxes.map((tax, index) => (
+                                        <tr key={tax.tax_id || index} className="hover:bg-gray-50">
+                                            <td className="p-3 border-r text-gray-800">{tax.tax_name}</td>
+                                            <td className="p-3 border-r text-gray-800">{tax.computation_method}</td>
+                                            <td className="p-3 border-r text-gray-800">{tax.applicable_on}</td>
+                                            <td className="p-3 text-gray-800">
+                                                {tax.computation_method === 'Percentage' ? `${tax.value}%` : `₹${tax.value}`}
                                             </td>
-                                            <td className="p-3 border-r text-center text-gray-800">{product.purchaseTax || 'N/A'}</td>
-                                            <td className="p-3 border-r text-right text-gray-800">
-                                                {product.salesPrice ? `₹${parseFloat(product.salesPrice).toLocaleString()}` : 'N/A'}
-                                            </td>
-                                            <td className="p-3 text-center text-gray-800">{product.salesTax || 'N/A'}</td>
                                         </tr>
                                     ))
                                 )}
                                 
                                 {/* Empty Rows for Visual Spacing */}
-                                {!loading && !error && products.length > 0 && emptyRows.map((_, index) => (
+                                {!loading && !error && taxes.length > 0 && emptyRows.map((_, index) => (
                                      <tr key={`empty-${index}`}>
                                         <td className="p-3 h-12 border-r">&nbsp;</td>
-                                        <td className="p-3 border-r"></td>
-                                        <td className="p-3 border-r"></td>
-                                        <td className="p-3 border-r"></td>
-                                        <td className="p-3 border-r"></td>
                                         <td className="p-3 border-r"></td>
                                         <td className="p-3 border-r"></td>
                                         <td className="p-3"></td>
@@ -184,4 +174,4 @@ const ProductMastersPage = () => {
     );
 };
 
-export default ProductMastersPage;
+export default TaxesMasterPage;

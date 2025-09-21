@@ -64,13 +64,13 @@ def get_hsn_code():
 def create_product():
     data = request.get_json() or {}
     
-    product_name = data.get("product_name")
+    product_name = data.get("name")
     if not product_name:
         return jsonify({"msg": "Product name is required"}), 400
     
-    sales_tax = data.get("sales_tax")
-    purchase_tax = data.get("purchase_tax")
-    
+    sales_tax = data.get("salesTax")
+    purchase_tax = data.get("purchaseTax")
+
     sales_tax_id = None
     purchase_tax_id = None
     
@@ -89,11 +89,11 @@ def create_product():
     try:
         new_product = Product(
             product_name = product_name,
-            type = data.get("product_type"),
-            sales_price = data.get("sales_price"),
+            type = data.get("type"),
+            sales_price = data.get("salesPrice"),
             category = data.get("category"),
-            purchase_price = data.get("purchase_price"),
-            hsn_code = data.get("hsn_code"),
+            purchase_price = data.get("purchasePrice"),
+            hsn_code = data.get("hsn"),
             sales_tax_id = sales_tax_id,
             purchase_tax_id = purchase_tax_id
         )
@@ -110,5 +110,5 @@ def create_product():
 @product_bp.route("/get_products", methods=["GET"])
 def get_products():
     products = Product.query.all()
-    result = [{"id": p.product_id, "name": p.product_name, "price": str(p.sales_price)} for p in products]
+    result = [{"id": p.product_id, "name": p.product_name, "type": p.type, "category": p.category, "hsn": p.hsn_code, "purchasePrice": str(p.purchase_price), "purchaseTax": p.purchase_tax_id, "salesPrice": str(p.sales_price), "salesTax": p.sales_tax_id} for p in products]
     return jsonify(result), 200

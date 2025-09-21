@@ -36,3 +36,12 @@ export const CreateUser = async (name, role, loginId, password, email) => {
         throw error;
     }
 };
+
+export const GetUsers = async () => {
+    try {
+        const response = await axios.get("http://127.0.0.1:5000/auth/get_users", { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};

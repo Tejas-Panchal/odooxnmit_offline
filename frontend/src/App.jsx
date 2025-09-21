@@ -15,6 +15,9 @@ import ContactsMasterPage from './pages/ContactsMasterPage'
 import CreateContactPage from './pages/CreateContactPage'
 import CreateUser from './pages/CreateUser'
 import ProductMastersPage from './pages/ProductMastersPage'
+import TaxesMasterPage from './pages/TaxesMasterPage'
+import CreateNewTaxPage from './pages/CreateNewTaxPage'
+import CreateSalesOrderPage from './pages/CreateSalesOrderPage'
 
 const App = () => {
   return (
@@ -36,6 +39,9 @@ const App = () => {
           <Route path="/Create_Contact" element={<CreateContactPage />} />
           <Route path="/create-user" element={<CreateUser />} />
           <Route path="/Product_Masters" element={<ProductMastersPage />} />
+          <Route path="/Taxes_Master" element={<TaxesMasterPage />} />
+          <Route path="/Create_New_Tax" element={<CreateNewTaxPage />} />
+          <Route path="/Create_Sales_Order" element={<CreateSalesOrderPage />} />
         </Routes>
       </Router>
     </div>

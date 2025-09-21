@@ -15,8 +15,8 @@ const PageHeader = () => (
             </div>
             <nav className="flex items-center space-x-6">
                 <button 
-                onClick={() => window.location.href = '/Contacts_Master'}
-                className="bg-gray-200 text-gray-800 px-5 py-1.5 rounded-md font-bold hover:bg-gray-300">Home</button>
+                onClick={() => window.history.back()}
+                className="bg-gray-200 text-gray-800 px-5 py-1.5 rounded-md font-bold hover:bg-gray-300">Back</button>
             </nav>
         </div>
     </header>

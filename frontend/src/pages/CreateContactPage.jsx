@@ -45,9 +45,9 @@ const PageHeader = () => (
                 </div>
             </div>
             <nav className="hidden md:flex items-center space-x-8">
-                <a href="#" className="hover:text-gray-300">Purchase</a>
-                <a href="#" className="hover:text-gray-300">Sale</a>
-                <a href="#" className="hover:text-gray-300">Report</a>
+                <button 
+                onClick={() => window.history.back()}
+                className="bg-gray-200 text-gray-800 px-5 py-1.5 rounded-md font-bold hover:bg-gray-300">Back</button>
                 <img src={profileImageUrl} alt="User Profile" className="h-10 w-10 rounded-full object-cover" />
             </nav>
         </div>
@@ -56,12 +56,7 @@ const PageHeader = () => (
 
 const PageSubHeader = () => (
     <div className="bg-white shadow-sm">
-        <div className="container mx-auto px-6 py-2">
-            <button className="flex items-center space-x-2 text-gray-700 hover:text-gray-900 font-bold text-lg">
-                <ArrowLeftIcon />
-                <span>Back</span>
-            </button>
-        </div>
+        
     </div>
 );
 
