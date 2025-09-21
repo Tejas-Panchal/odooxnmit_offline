@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-// --- Re-usable Components for this Page ---
+
+const profileImageUrl = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=464&q=80';
 
 // Placeholder Logo URL
 const logoUrl = 'https://i.imgur.com/sC44oMA.png';
@@ -18,6 +19,13 @@ const PageHeader = () => (
                 <button className="bg-green-400 text-green-900 px-5 py-1.5 rounded-md font-bold hover:bg-green-300 transition-colors">
                     New
                 </button>
+                <button 
+                onClick={() => {
+                    window.localStorage.removeItem('token');
+                    window.location.href = '/login';
+                }}
+                className="bg-gray-200 text-gray-800 px-5 py-1.5 rounded-md font-bold hover:bg-gray-300 transition-colors">Log out</button>
+                <img src={profileImageUrl} alt="User Profile" className="h-10 w-10 rounded-full object-cover" />
             </nav>
         </div>
     </header>

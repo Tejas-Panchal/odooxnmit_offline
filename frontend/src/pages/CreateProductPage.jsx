@@ -39,9 +39,9 @@ const PageHeader = () => (
                 </div>
             </div>
             <nav className="hidden md:flex items-center space-x-8">
-                <a href="#" className="hover:text-gray-300">Purchase</a>
-                <a href="#" className="hover:text-gray-300">Sale</a>
-                <a href="#" className="hover:text-gray-300">Report</a>
+                <button 
+                onClick={() => window.history.back()}
+                className="bg-gray-200 text-gray-800 px-5 py-1.5 rounded-md font-bold hover:bg-gray-300 transition-colors">Back</button>
                 <img src={profileImageUrl} alt="User Profile" className="h-10 w-10 rounded-full object-cover" />
             </nav>
         </div>
@@ -53,15 +53,7 @@ const PageSubHeader = () => {
     
     return (
         <div className="bg-white shadow-sm">
-            <div className="container mx-auto px-6 py-2">
-                <button 
-                    onClick={() => navigate(-1)}
-                    className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 font-semibold"
-                >
-                    <ArrowLeftIcon />
-                    <span>Back</span>
-                </button>
-            </div>
+            
         </div>
     );
 };
@@ -150,7 +142,7 @@ const CreateProductPage = () => {
             {/* Main Content Area */}
             <main className="flex-grow flex items-center justify-center py-10 px-4">
                 <div className="w-full max-w-5xl bg-white p-8 rounded-2xl shadow-xl border-t-4 border-teal-300">
-                    <h2 style={{ fontFamily: "'Brush Script MT', cursive", color: '#008080' }} className="text-4xl mb-8">
+                    <h2 style={{  color: '#008080' }} className="text-4xl mb-8">
                         Create New Product
                     </h2>
 

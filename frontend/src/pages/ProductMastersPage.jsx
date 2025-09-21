@@ -45,7 +45,10 @@ const PageHeader = () => (
                 </div>
             </div>
             <nav className="hidden md:flex items-center space-x-8">
-                <a href="#" className="hover:text-gray-300">Purchase</a>
+                <button
+                    onClick={() => window.history.back()}
+                    className="bg-gray-200 text-gray-800 px-5 py-1.5 rounded-md font-bold hover:bg-gray-300 transition-colors"
+                >Back</button>
                 <img src={profileImageUrl} alt="User Profile" className="h-10 w-10 rounded-full object-cover" />
             </nav>
         </div>

@@ -108,7 +108,6 @@ const PageHeader = ({ userRole }) => {
                     </div>
                 </div>
                 <nav className="hidden md:flex items-center space-x-8">
-                    <a href="#" className="hover:text-gray-300">Purchase</a>
                     
                     {/* Sales Order Dropdown - Available for Admin and Accountant */}
                     {(userRole === 'Admin' || userRole === 'Accountant') && (
