@@ -1,5 +1,5 @@
-import React from 'react';
-
+import React, { useState } from 'react';
+import axios from 'axios';
 
 // --- Re-usable Components for this Page ---
 
@@ -48,13 +48,50 @@ const FormField = ({ label }) => (
 );
 
 // --- The Main Customer Invoice Page Component ---
-
 const CustomerInvoicePage = () => {
+    // State to handle payment processing and errors
+    const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+    const [error, setError] = useState(null);
+
+    // Hardcoded invoiceId for demonstration. In a real app, this would come from a URL parameter.
+    const invoiceId = 1;
+
     // Data for the invoice table
     const tableItems = [
         { sr: 1, product: 'Table', hsn: '940370', account: 'Sales Income A/C', qty: 6, price: '3,100', untaxed: '18,600', tax: '10%', taxAmt: '1,850', total: '20,460' },
         { sr: 2, product: 'chair', hsn: '956300', account: 'Sales Income A/C', qty: 3, price: '1,000', untaxed: '3,000', tax: '5%', taxAmt: '160', total: '3,150' },
     ];
+
+    const handlePayClick = async () => {
+        setIsProcessingPayment(true);
+        setError(null);
+
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                setError("Authorization token missing. Please log in.");
+                setIsProcessingPayment(false);
+                return;
+            }
+
+            // Call the backend API to initiate payment
+            const response = await axios.post(
+                `http://127.0.0.1:5000/api/payments/initiate-customer-invoice-payment/${invoiceId}`,
+                {},
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+
+            const { payment_url } = response.data;
+            
+            // Redirect the user to the external payment link
+            window.location.href = payment_url;
+
+        } catch (err) {
+            console.error("Payment initiation failed:", err);
+            setError(err.response?.data?.msg || "An unexpected error occurred.");
+            setIsProcessingPayment(false);
+        }
+    };
 
     return (
         <div className="flex flex-col min-h-screen bg-gray-100 font-sans">
@@ -66,14 +103,13 @@ const CustomerInvoicePage = () => {
                 
                 {/* Top form section */}
                 <div className="bg-white p-6 rounded-t-lg shadow-md border-x border-t border-gray-200">
-                     
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4">
                         <div className="space-y-4">
                             <FormField label="Customer Invoice No." />
                             <FormField label="Customer Name" />
                             <FormField label="Reference" />
                         </div>
-                         <div className="space-y-4">
+                        <div className="space-y-4">
                             <FormField label="Invoice Data" />
                             <FormField label="Due date" />
                         </div>
@@ -87,7 +123,13 @@ const CustomerInvoicePage = () => {
                         <button className="bg-[#714B67] text-white px-6 py-2 rounded-md font-semibold border-2 border-purple-800">Print</button>
                         <button className="bg-[#714B67] text-white px-6 py-2 rounded-md font-semibold border-2 border-purple-800">Send</button>
                         <button className="bg-[#714B67] text-white px-6 py-2 rounded-md font-semibold border-2 border-purple-800">Cancel</button>
-                        <button className="bg-[#714B67] text-white px-6 py-2 rounded-md font-semibold border-2 border-purple-800">Pay</button>
+                        <button 
+                            onClick={handlePayClick}
+                            className="bg-[#714B67] text-white px-6 py-2 rounded-md font-semibold border-2 border-purple-800"
+                            disabled={isProcessingPayment}
+                        >
+                            {isProcessingPayment ? 'Processing...' : 'Pay'}
+                        </button>
                     </div>
                     <div className="flex space-x-2 items-center font-semibold text-gray-600">
                         {['Draft', 'Confirm', 'Cancelled'].map(status => (
@@ -95,6 +137,8 @@ const CustomerInvoicePage = () => {
                         ))}
                     </div>
                 </div>
+
+                {error && <div className="text-red-500 mb-4">{error}</div>}
 
                 {/* Invoice Table */}
                 <div className="overflow-x-auto bg-white rounded-b-lg shadow-md border-x border-b border-gray-200">

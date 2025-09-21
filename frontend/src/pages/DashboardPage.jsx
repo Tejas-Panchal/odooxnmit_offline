@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Logo from '../assests/logo_1.png';
 
 // --- Re-usable Components for this Page ---
 
@@ -105,7 +106,6 @@ const DashboardContent = () => (
 // --- The Final Dashboard Page ---
 const DashboardPage = () => {
     const [isNavOpen, setIsNavOpen] = useState(false);
-    const logoUrl = 'https://i.imgur.com/sC44oMA.png';
 
     return (
         <>
@@ -117,7 +117,7 @@ const DashboardPage = () => {
                 <header className="bg-[#714B67] text-white shadow-lg">
                     <div className="container mx-auto flex justify-between items-center px-6 py-4">
                         <div className="flex items-center space-x-3">
-                            <img src={logoUrl} alt="Logo" className="h-10 w-10 rounded-full" />
+                            <img src={Logo} alt="Logo" className="h-10 w-18 rounded-full" />
                             <h1 className="text-xl font-semibold">Shiv Accounts Cloud</h1>
                         </div>
                         <nav>

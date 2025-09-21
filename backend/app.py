@@ -1,6 +1,9 @@
 from flask import Flask
 from config import Config
 from extensions import db, jwt, cors, mail
+#from flask import Flask
+from flask_migrate import Migrate
+#from extensions import db 
 from routes.auth import auth_bp
 from routes.protected import protected_bp
 from routes.product import product_bp
@@ -43,7 +46,7 @@ def create_app():
     app.register_blueprint(coa_bp, url_prefix="/api")
     app.register_blueprint(po_bp, url_prefix="/api")
     
-
+    migrate = Migrate(app, db)
     with app.app_context():
         db.create_all()
 

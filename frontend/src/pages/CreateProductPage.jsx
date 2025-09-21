@@ -1,4 +1,5 @@
 import React from 'react';
+import Logo from '../assests/logo_1.png';
 
 // --- Re-usable SVG Icons ---
 
@@ -18,7 +19,6 @@ const ArrowLeftIcon = () => (
 
 
 // Placeholder URLs for images
-const logoUrl = 'https://i.imgur.com/sC44oMA.png'; // Using the circular logo
 const profileImageUrl = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=464&q=80';
 
 
@@ -30,7 +30,7 @@ const PageHeader = () => (
                 <div className="flex items-center space-x-3">
                     <div className="h-12 w-12 bg-gray-200 rounded-full flex items-center justify-center p-1">
                         <div className="h-full w-full bg-white rounded-full flex items-center justify-center">
-                            <img src={logoUrl} alt="Logo" className="h-8 w-8" />
+                            <img src={Logo} alt="Logo" className="h-10 w-18 rounded-full" />
                         </div>
                     </div>
                     <h1 className="text-xl font-semibold">Shiv Accounts Cloud</h1>

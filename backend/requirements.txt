@@ -9,3 +9,4 @@ Werkzeug
 flask_mail
 requests
 marshmallow
+stripe

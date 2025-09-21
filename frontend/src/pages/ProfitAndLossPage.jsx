@@ -1,16 +1,14 @@
 import React from 'react';
+import Logo from '../assests/logo_1.png';
 
 // --- Re-usable Components for this Page ---
-
-// Placeholder Logo URL
-const logoUrl = 'https://i.imgur.com/sC44oMA.png';
 
 // Consistent Header Component
 const PageHeader = () => (
     <header className="bg-[#714B67] text-white shadow-lg">
         <div className="container mx-auto flex justify-between items-center px-6 py-4">
             <div className="flex items-center space-x-3">
-                <img src={logoUrl} alt="Logo" className="h-10 w-10 rounded-full" />
+                <img src={Logo} alt="Logo" className="h-12 w-12 rounded-full" />
                 <h1 className="text-xl font-semibold">Shiv Accounts Cloud</h1>
             </div>
             <nav className="flex items-center space-x-6">

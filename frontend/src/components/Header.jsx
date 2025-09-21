@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import React from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import Logo from "../assests/logo_1.png";
 
 export const Header = () => {
@@ -15,45 +15,57 @@ export const Header = () => {
   };
 
   const getButtonClass = (path) => {
-    return isActive(path) 
-      ? "bg-white text-[#714B67] px-4 py-1 rounded-full font-medium" 
+    return isActive(path)
+      ? "bg-white text-[#714B67] px-4 py-1 rounded-full font-medium"
       : "hover:text-gray-300 px-4 py-1 rounded-full";
   };
 
   return (
     <div>
-        <header className="bg-[#714B67] text-white">
-        <div className="container mx-auto flex justify-between items-center px-6 py-4">
-          <div className="text-xl font-bold cursor-pointer" onClick={() => handleNavigation('/')}>
-            <img 
-              src={Logo} 
-              alt="Shiv Accounts Cloud Logo" 
-              style={{height: "32px", width: "32px", objectFit: "contain"}} 
+      <header className="bg-[#714B67] text-white">
+        <div className="container mx-auto flex justify-between items-center px-6 py-2">
+          <div
+            className="text-xl font-bold cursor-pointer flex items-center space-x-2"
+            onClick={() => handleNavigation("/")}
+          >
+            <img
+              src={Logo}
+              alt="Shiv Accounts Cloud Logo"
+              style={{
+                height: "60px",
+                width: "60px",
+                objectFit: "contain",
+                borderRadius: "50%",
+              }}
             />
-            Shiv Accounts Cloud
+            <div
+              className="text-2xl font-bold"
+            >
+              Shiv Accounts Cloud
+            </div>
           </div>
           <nav className="flex space-x-8">
-            <button 
-              onClick={() => handleNavigation('/')} 
-              className={getButtonClass('/')}
+            <button
+              onClick={() => handleNavigation("/")}
+              className={getButtonClass("/")}
             >
               Home
             </button>
-            <button 
-              onClick={() => handleNavigation('/create-user')} 
-              className={getButtonClass('/services')}
+            <button
+              onClick={() => handleNavigation("/") || scrollToSection("services")}
+              className={getButtonClass("/services")}
             >
               Services
             </button>
-            <button 
-              onClick={() => handleNavigation('/login')} 
-              className={getButtonClass('/login')}
+            <button
+              onClick={() => handleNavigation("/login")}
+              className={getButtonClass("/login")}
             >
               Login
             </button>
-            <button 
-              onClick={() => handleNavigation('/register')}
-              className={getButtonClass('/register')}
+            <button
+              onClick={() => handleNavigation("/register")}
+              className={getButtonClass("/register")}
             >
               Sign Up
             </button>
@@ -61,7 +73,7 @@ export const Header = () => {
         </div>
       </header>
     </div>
-  )}
+  );
+};
 
 export default Header;
-    
