@@ -1,6 +1,7 @@
 # odooxnmit_offline
-Team name: One piece 
-Team no. : 92
+-Team name: One piece 
+
+-Team no. : 92
 
 # Shiv Accounts Cloud  
 Orders, Invoices & Real-Time Reports
@@ -125,6 +126,7 @@ System generates reports in real time:
 - Advanced user and permission management
 - Real-time synchronization
 - Automated testing and CI/CD pipeline
+
 
 
 
