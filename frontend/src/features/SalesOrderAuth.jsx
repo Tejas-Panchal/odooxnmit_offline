@@ -11,9 +11,9 @@ export const GetSalesOrders = async () => {
 };
 
 
-export const CreateSalesOrder = async (customerId, orderDate, lineItems) => {
+export const CreateSalesOrder = async (customerId, order_Date, status) => {
     try {
-        const response = await axios.post("http://localhost:5000/api/sales-orders", { customerId, orderDate, lineItems }, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }); 
+        const response = await axios.post("http://localhost:5000/api/sales-orders", { customerId, order_Date, status }, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
         return response.data;
     } catch (error) {
         console.error("Error creating sales order:", error);

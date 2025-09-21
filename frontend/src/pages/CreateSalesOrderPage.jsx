@@ -33,7 +33,7 @@ const PageHeader = () => {
     );
 };
 const PageSubHeader = () => (
-    <div className="bg-white shadow-sm"><div className="container mx-auto px-6 py-2"><button className="flex items-center space-x-2 text-gray-700 hover:text-gray-900 font-semibold"><ArrowLeftIcon /><span>Back</span></button></div></div>
+    <div className="bg-white shadow-sm"></div>
 );
 
 // --- MOCK DATA (Replace with API calls) ---

@@ -53,7 +53,7 @@ const PageHeader = ({ userRole }) => {
 
     const usersSalesOrder = [
         { name: 'Sales Orders', path: '/Sales_Order' },
-        { name: 'Create Sales Order', path: '/create-sales-order' }
+        { name: 'Create Sales Order', path: '/Create_Sales_Order' }
     ];
 
     const handleReportSelect = (reportPath) => {
