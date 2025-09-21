@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CreateUser as CreateUserAPI } from '../features/Auth';
+import Logo from '../assests/logo_1.png';
 
 
 // You can replace these with your actual image paths

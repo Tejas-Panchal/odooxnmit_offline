@@ -71,7 +71,7 @@ const HomePage = () => {
                 </section>
 
                 {/* Services Section */}
-                <section className="bg-gray-700 text-white py-20 px-6">
+                <section id="services" className="bg-gray-700 text-white py-20 px-6">
                     <div className="container mx-auto text-center">
                         <h2 className="text-4xl font-bold mb-3">Services</h2>
                         <div className="w-24 h-1 bg-teal-500 mx-auto mb-12"></div>
