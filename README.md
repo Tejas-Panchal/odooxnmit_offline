@@ -75,7 +75,7 @@ System generates reports in real time:
 ## Getting Started
 
 ### Prerequisites
-- Node.js (v14+ recommended)
+- React.js (v14+ recommended)
 - Python (v3.8+ recommended)
 - Git
 
@@ -122,4 +122,5 @@ System generates reports in real time:
 - Advanced user and permission management
 - Real-time synchronization
 - Automated testing and CI/CD pipeline
+
 
