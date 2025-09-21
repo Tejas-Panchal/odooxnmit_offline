@@ -12,11 +12,11 @@ from models.sales_order import SalesOrder
 from models.purchase_order import PurchaseOrder
 from models.stock_leadger import StockLedger
 from extensions import db
+from services.report_services import generate_balance_sheet, generate_profit_and_loss
 
 reports_bp = Blueprint('reports', __name__)
 
-# (All your other report APIs remain the same)
-
+# --- Partner Ledger API (existing) ---
 @reports_bp.route("/partner-ledger/<int:contact_id>", methods=["GET"])
 @jwt_required()
 def get_partner_ledger(contact_id):
@@ -27,52 +27,50 @@ def get_partner_ledger(contact_id):
     contact = Contact.query.get_or_404(contact_id)
     all_transactions = []
 
-    # Check if the contact is a Customer or Both
     if contact.type in ['Customer', 'Both']:
-        # Fetch Invoices and their associated payments
         invoices = db.session.query(
             CustomerInvoice.invoice_id.label('ref_id'),
             CustomerInvoice.invoice_date.label('date'),
             CustomerInvoice.total_amount.label('amount'),
             db.literal('Invoice').label('type')
-        ).join(SalesOrder, CustomerInvoice.so_id == SalesOrder.so_id).filter(SalesOrder.customer_id == contact_id).all()
-        
+        ).join(SalesOrder, CustomerInvoice.so_id == SalesOrder.so_id)\
+         .filter(SalesOrder.customer_id == contact_id).all()
         all_transactions.extend(invoices)
 
         invoice_payments = db.session.query(
             Payment.payment_id.label('ref_id'),
             Payment.payment_date.label('date'),
-            (Payment.amount * -1).label('amount'), # Payments reduce the balance
+            (Payment.amount * -1).label('amount'),
             db.literal('Payment').label('type')
-        ).filter(Payment.related_type == 'Invoice', Payment.related_id.in_([i.ref_id for i in invoices])).all()
-
+        ).filter(
+            Payment.related_type == 'Invoice', 
+            Payment.related_id.in_([i.ref_id for i in invoices])
+        ).all()
         all_transactions.extend(invoice_payments)
 
-    # Check if the contact is a Vendor or Both
     if contact.type in ['Vendor', 'Both']:
-        # Fetch Bills and their associated payments
         bills = db.session.query(
             VendorBill.bill_id.label('ref_id'),
             VendorBill.bill_date.label('date'),
-            (VendorBill.total_amount * -1).label('amount'), # Bills are expenses, so negative
+            (VendorBill.total_amount * -1).label('amount'),
             db.literal('Bill').label('type')
-        ).join(PurchaseOrder, VendorBill.po_id == PurchaseOrder.po_id).filter(PurchaseOrder.vendor_id == contact_id).all()
-
+        ).join(PurchaseOrder, VendorBill.po_id == PurchaseOrder.po_id)\
+         .filter(PurchaseOrder.vendor_id == contact_id).all()
         all_transactions.extend(bills)
-        
+
         bill_payments = db.session.query(
             Payment.payment_id.label('ref_id'),
             Payment.payment_date.label('date'),
-            (Payment.amount * 1).label('amount'), # Bill payments are positive to reduce liability
+            (Payment.amount * 1).label('amount'),
             db.literal('Payment').label('type')
-        ).filter(Payment.related_type == 'Bill', Payment.related_id.in_([b.ref_id for b in bills])).all()
-        
+        ).filter(
+            Payment.related_type == 'Bill', 
+            Payment.related_id.in_([b.ref_id for b in bills])
+        ).all()
         all_transactions.extend(bill_payments)
 
-    # Combine and sort all transactions by date
     all_transactions.sort(key=lambda x: x.date)
 
-    # Calculate running balance
     running_balance = 0
     ledger_entries = []
     for trx in all_transactions:
@@ -90,3 +88,23 @@ def get_partner_ledger(contact_id):
         "ledger_entries": ledger_entries
     }
     return jsonify(response), 200
+
+# --- Balance Sheet API ---
+@reports_bp.route("/balance-sheet", methods=["GET"])
+@jwt_required()
+def balance_sheet():
+    """
+    Generates and returns a Balance Sheet report.
+    """
+    report = generate_balance_sheet()
+    return jsonify({"balance_sheet": report}), 200
+
+# --- Profit & Loss API ---
+@reports_bp.route("/profit-loss", methods=["GET"])
+@jwt_required()
+def profit_and_loss():
+    """
+    Generates and returns a Profit & Loss statement.
+    """
+    report = generate_profit_and_loss()
+    return jsonify({"profit_and_loss": report}), 200
